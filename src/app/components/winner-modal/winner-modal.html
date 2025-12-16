@@ -1,0 +1,36 @@
+@if (winner()) {
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity animate-in fade-in duration-300"
+        (click)="close.emit()"></div>
+
+    <!-- Modal Content -->
+    <div
+        class="relative bg-slate-800 border-2 border-indigo-500/50 rounded-2xl shadow-2xl w-full max-w-sm p-8 text-center animate-in zoom-in-95 duration-300 scale-100">
+
+        <button (click)="close.emit()" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors">
+            <lucide-angular [img]="X" [size]="24"></lucide-angular>
+        </button>
+
+        <div class="mb-6 flex justify-center">
+            <div class="bg-indigo-500/20 p-4 rounded-full">
+                <lucide-angular [img]="Trophy" [size]="48" class="text-yellow-400 drop-shadow-lg"></lucide-angular>
+            </div>
+        </div>
+
+        <h3 class="text-slate-400 text-lg uppercase tracking-wide font-semibold mb-2">
+            Temos um vencedor!
+        </h3>
+
+        <h2
+            class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400 mb-8 break-words leading-tight">
+            {{ winner() }}
+        </h2>
+
+        <button (click)="close.emit()"
+            class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg shadow-indigo-500/25">
+            Legal!
+        </button>
+    </div>
+</div>
+}

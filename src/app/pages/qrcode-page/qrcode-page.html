@@ -1,0 +1,76 @@
+<div class="w-full max-w-4xl mx-auto p-4 animate-in fade-in duration-500">
+
+    <header class="text-center mb-10">
+        <div class="inline-flex items-center justify-center p-3 bg-pink-500/20 rounded-full mb-4">
+            <lucide-angular [img]="QrCode" class="text-pink-400" [size]="32"></lucide-angular>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-black text-white mb-2">
+            Gerador <span class="text-pink-400">QR Code</span>
+        </h1>
+        <p class="text-slate-400">Transforme links em imagens escaneáveis instantaneamente.</p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+
+        <!-- Left: Input -->
+        <div class="bg-slate-800 p-8 rounded-3xl border border-slate-700 shadow-xl relative overflow-hidden">
+            <div
+                class="absolute top-0 right-0 w-32 h-32 bg-pink-500/10 rounded-full blur-3xl pointer-events-none -mr-10 -mt-10">
+            </div>
+
+            <label class="block text-slate-300 font-bold mb-4 flex items-center gap-2">
+                <lucide-angular [img]="LinkIcon" [size]="18"></lucide-angular> Insira o Link ou Texto
+            </label>
+
+            <textarea [ngModel]="url()" (ngModelChange)="url.set($event)" placeholder="https://co.labbs..."
+                class="w-full h-32 bg-slate-900 border border-slate-600 rounded-xl p-4 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all resize-none mb-4"></textarea>
+
+            <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700/50">
+                <h3 class="text-sm font-semibold text-slate-400 mb-2">Dicas:</h3>
+                <ul class="text-xs text-slate-500 space-y-1 list-disc list-inside">
+                    <li>Cole links completos (com http://)</li>
+                    <li>QR codes funcionam para textos simples também</li>
+                    <li>Teste a leitura com a câmera antes de imprimir</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Right: Preview -->
+        <div class="flex flex-col items-center justify-center space-y-6">
+
+            <div class="relative group">
+                <!-- Glow Effect -->
+                @if (qrImage()) {
+                <div
+                    class="absolute -inset-1 bg-gradient-to-tr from-pink-500 to-indigo-500 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-500">
+                </div>
+                }
+
+                <div class="relative bg-white p-4 rounded-xl shadow-2xl w-72 h-72 flex items-center justify-center">
+                    @if (qrImage()) {
+                    <img [src]="qrImage()" alt="QR Code Generated" class="w-full h-full object-contain" />
+                    } @else {
+                    <div class="text-slate-300 flex flex-col items-center text-center">
+                        <lucide-angular [img]="QrCode" [size]="64" class="mb-2 opacity-20"></lucide-angular>
+                        <span class="text-sm font-medium text-slate-400">Aguardando link...</span>
+                    </div>
+                    }
+                </div>
+            </div>
+
+            <button (click)="handleDownload()" [disabled]="!qrImage()"
+                class="group flex items-center gap-2 bg-slate-800 hover:bg-pink-600 border border-slate-600 hover:border-pink-500 text-white font-bold py-3 px-8 rounded-full shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-slate-800 transition-all duration-300 hover:scale-105">
+                <lucide-angular [img]="Download" [size]="20" class="group-hover:animate-bounce"></lucide-angular>
+                <span>Baixar PNG</span>
+            </button>
+
+            @if (error()) {
+            <p class="text-red-400 text-sm flex items-center gap-2 bg-red-400/10 px-4 py-2 rounded-lg">
+                <lucide-angular [img]="AlertCircle" [size]="16"></lucide-angular> {{ error() }}
+            </p>
+            }
+
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,32 @@
+<div class="flex flex-col items-center gap-8 w-full animate-in fade-in duration-500">
+    <!-- Header -->
+    <header class="text-center space-y-2">
+        <div class="inline-flex items-center justify-center p-3 bg-indigo-500/20 rounded-full mb-4">
+            <lucide-angular [img]="Sparkles" class="text-indigo-400" [size]="32"></lucide-angular>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-black tracking-tight text-white drop-shadow-md">
+            Roleta da <span class="text-indigo-400">Sorte</span>
+        </h1>
+        <p class="text-slate-400">Adicione itens, gire a roleta e descubra o vencedor!</p>
+    </header>
+
+    <!-- Main Layout -->
+    <main class="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-start justify-items-center">
+
+        <!-- Left Column: Wheel -->
+        <section class="w-full flex justify-center lg:justify-end order-2 lg:order-1">
+            <app-wheel [items]="activeItems()" [rotation]="rotation()" [isSpinning]="isSpinning()"
+                [spinDuration]="spinDuration" (spin)="handleSpin()"></app-wheel>
+        </section>
+
+        <!-- Right Column: Controls -->
+        <section class="w-full flex justify-center lg:justify-start order-1 lg:order-2 h-full">
+            <app-wheel-controls [items]="items()" [activeCount]="activeItems().length" [isSpinning]="isSpinning()"
+                (addItem)="addItem($event)" (removeItem)="removeItem($event)"
+                (updateQuantity)="updateQuantity($event)"></app-wheel-controls>
+        </section>
+
+    </main>
+
+    <app-winner-modal [winner]="winner()" (close)="closeModal()"></app-winner-modal>
+</div>

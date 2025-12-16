@@ -1,0 +1,266 @@
+<!-- Editor Overlay -->
+@if (isEditing()) {
+<div class="w-full max-w-4xl mx-auto p-6 animate-in slide-in-from-bottom-10 fade-in duration-300">
+    <div class="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-2xl">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-white">Editar Pergunta</h2>
+            <button (click)="closeEditor()" class="text-slate-400 hover:text-white">
+                <lucide-angular [img]="X"></lucide-angular>
+            </button>
+        </div>
+
+        <div class="space-y-6">
+            <div>
+                <label class="block text-sm font-bold text-slate-400 mb-2">Pergunta</label>
+                <textarea [ngModel]="editText()" (ngModelChange)="editText.set($event)"
+                    class="w-full bg-slate-900 border border-slate-600 rounded-xl p-4 text-white text-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                    placeholder="Escreva sua pergunta aqui..." rows="3"></textarea>
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-slate-400 mb-2">Tempo (segundos)</label>
+                <div class="flex gap-4">
+                    @for (t of [10, 20, 30, 60, 90]; track t) {
+                    <button (click)="editTime.set(t)" class="px-4 py-2 rounded-lg font-bold transition-colors"
+                        [class]="editTime() === t ? 'bg-indigo-600 text-white' : 'bg-slate-700 text-slate-400 hover:bg-slate-600'">
+                        {{ t }}s
+                    </button>
+                    }
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                @for (opt of editOptions(); track opt.id; let idx = $index) {
+                <div class="relative">
+                    <div class="flex items-center p-3 rounded-t-lg" [ngClass]="getBgColor(opt.color)">
+                        <div class="text-white mr-3">
+                            <ng-container
+                                *ngTemplateOutlet="shapeIcon; context: {$implicit: opt.shape, size: 20}"></ng-container>
+                        </div>
+                        <span class="text-white font-bold uppercase text-xs opacity-75">Opção {{ idx + 1 }}</span>
+                        <div class="ml-auto">
+                            <button (click)="toggleOptionCorrect(idx)"
+                                class="w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all"
+                                [ngClass]="opt.isCorrect ? 'bg-white border-white text-green-600' : 'border-white/50 text-transparent hover:border-white'">
+                                <lucide-angular [img]="Check" [size]="20" [strokeWidth]="4"></lucide-angular>
+                            </button>
+                        </div>
+                    </div>
+                    <input type="text" [ngModel]="opt.text" (ngModelChange)="updateOptionText(idx, $event)"
+                        class="w-full bg-slate-900 border-x border-b border-slate-600 rounded-b-lg p-3 text-white focus:outline-none focus:border-indigo-500"
+                        [placeholder]="'Resposta da opção ' + (opt.color === 'red' ? 'vermelha' : opt.color === 'blue' ? 'azul' : opt.color === 'yellow' ? 'amarela' : 'verde')" />
+                </div>
+                }
+            </div>
+
+            <button (click)="handleSaveQuestion()"
+                class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2 text-lg">
+                <lucide-angular [img]="Save"></lucide-angular> Salvar Pergunta
+            </button>
+        </div>
+    </div>
+</div>
+}
+
+<!-- Game View -->
+@else if (gameState() === 'question' || gameState() === 'reveal') {
+<div class="min-h-screen flex flex-col p-4 md:p-8 animate-in fade-in duration-500 bg-slate-900">
+    <!-- Header / Stats -->
+    <div class="flex justify-between items-center mb-6">
+        <div class="bg-slate-800 px-4 py-2 rounded-full text-slate-300 font-bold border border-slate-700">
+            {{ currentQuestionIndex() + 1 }} / {{ questions().length }}
+        </div>
+        <button (click)="setGameState('setup')" class="text-slate-500 hover:text-white">
+            <lucide-angular [img]="X"></lucide-angular>
+        </button>
+    </div>
+
+    <!-- Question Display -->
+    <div class="flex-1 flex flex-col justify-center items-center mb-8">
+        <div class="bg-white text-slate-900 p-8 md:p-12 rounded-xl shadow-2xl text-center max-w-5xl w-full">
+            <h1 class="text-3xl md:text-5xl font-black leading-tight">
+                {{ currentQuestion().text }}
+            </h1>
+        </div>
+
+        <!-- Timer Bar -->
+        <div class="w-full max-w-5xl mt-8 flex items-center gap-4">
+            <div
+                class="bg-purple-600 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-black text-white shrink-0 shadow-lg border-4 border-purple-400">
+                {{ timeLeft() }}
+            </div>
+            <div class="flex-1 h-6 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+                <div class="h-full bg-purple-500 transition-all duration-1000 ease-linear" [style.width.%]="progress()">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Options Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-7xl mx-auto w-full mb-8">
+        @for (opt of currentQuestion().options; track opt.id) {
+        @let isReveal = gameState() === 'reveal';
+        @let dim = isReveal && !opt.isCorrect;
+
+        <div class="relative p-6 md:p-10 rounded-xl transition-all duration-500 flex items-center gap-6 shadow-xl"
+            [ngClass]="[
+            getBgColor(opt.color),
+            dim ? 'opacity-20 grayscale scale-95' : 'opacity-100 scale-100',
+            isReveal && opt.isCorrect ? 'ring-8 ring-white z-10 scale-105' : ''
+          ]">
+            <div class="text-white shrink-0 drop-shadow-md">
+                <ng-container *ngTemplateOutlet="shapeIcon; context: {$implicit: opt.shape, size: 48}"></ng-container>
+            </div>
+            <span class="text-2xl md:text-3xl font-bold text-white drop-shadow-md leading-tight">
+                {{ opt.text }}
+            </span>
+            @if (isReveal && opt.isCorrect) {
+            <div class="absolute top-4 right-4 bg-white text-green-600 rounded-full p-2 animate-bounce">
+                <lucide-angular [img]="Check" [size]="32" [strokeWidth]="4"></lucide-angular>
+            </div>
+            }
+        </div>
+        }
+    </div>
+
+    <!-- Controls -->
+    <div class="flex justify-end max-w-7xl mx-auto w-full">
+        @if (gameState() === 'question') {
+        <button (click)="skipTime()"
+            class="bg-slate-700 hover:bg-slate-600 text-white px-8 py-3 rounded-xl font-bold text-lg transition-colors">
+            Pular Tempo
+        </button>
+        } @else {
+        <button (click)="nextQuestion()"
+            class="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-xl font-bold text-lg transition-colors flex items-center gap-2 shadow-lg hover:scale-105">
+            Próxima <lucide-angular [img]="ChevronRight"></lucide-angular>
+        </button>
+        }
+    </div>
+</div>
+}
+
+<!-- Finished View -->
+@else if (gameState() === 'finished') {
+<div class="min-h-screen flex flex-col items-center justify-center p-4 text-center animate-in zoom-in duration-500">
+    <div class="bg-slate-800 p-12 rounded-3xl border border-slate-700 shadow-2xl max-w-2xl w-full">
+        <div class="bg-yellow-500/20 p-6 rounded-full inline-block mb-6">
+            <lucide-angular [img]="Gamepad2" [size]="64" class="text-yellow-400"></lucide-angular>
+        </div>
+        <h1 class="text-5xl font-black text-white mb-4">Quiz Finalizado!</h1>
+        <p class="text-slate-400 text-xl mb-10">Todas as perguntas foram respondidas.</p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <button (click)="resetGame()"
+                class="bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2">
+                <lucide-angular [img]="RotateCcw"></lucide-angular> Jogar Novamente
+            </button>
+            <button (click)="setGameState('setup')"
+                class="bg-slate-700 hover:bg-slate-600 text-white px-8 py-4 rounded-xl font-bold text-lg">
+                Voltar ao Menu
+            </button>
+        </div>
+    </div>
+</div>
+}
+
+<!-- Setup View (Default) -->
+@else {
+<div class="w-full max-w-5xl mx-auto p-4 animate-in fade-in duration-500">
+
+    <header class="text-center mb-10">
+        <div class="inline-flex items-center justify-center p-3 bg-indigo-500/20 rounded-full mb-4">
+            <lucide-angular [img]="Gamepad2" class="text-indigo-400" [size]="32"></lucide-angular>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-black text-white mb-2">
+            Quiz <span class="text-indigo-400">Show</span>
+        </h1>
+        <p class="text-slate-400">Crie perguntas e desafie a plateia no estilo game show.</p>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- Actions Sidebar -->
+        <div class="space-y-4">
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl text-center">
+                <div class="text-5xl font-black text-white mb-2">{{ questions().length }}</div>
+                <div class="text-slate-400 font-bold uppercase text-xs tracking-widest mb-6">Perguntas Criadas</div>
+
+                <button (click)="openEditor()"
+                    class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 mb-3 hover:scale-105 transition-transform">
+                    <lucide-angular [img]="Plus" [size]="20"></lucide-angular> Adicionar Pergunta
+                </button>
+
+                <button (click)="startGame()" [disabled]="questions().length === 0"
+                    class="w-full bg-green-600 hover:bg-green-500 disabled:bg-slate-700 disabled:text-slate-500 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 shadow-lg transition-all">
+                    <lucide-angular [img]="Play" [size]="20"></lucide-angular> Iniciar Quiz
+                </button>
+            </div>
+
+            <div class="bg-slate-800/50 p-4 rounded-xl text-sm text-slate-400 border border-slate-700/50">
+                <p>💡 <span class="font-bold text-slate-300">Dica:</span> Projete esta tela. A plateia responde gritando
+                    a cor ou levantando cartões.</p>
+            </div>
+        </div>
+
+        <!-- Question List -->
+        <div class="lg:col-span-2 space-y-4">
+            @if (questions().length === 0) {
+            <div
+                class="bg-slate-800/30 border-2 border-dashed border-slate-700 rounded-2xl p-12 text-center text-slate-500 flex flex-col items-center">
+                <lucide-angular [img]="Gamepad2" [size]="48" class="mb-4 opacity-20"></lucide-angular>
+                <p class="text-lg font-medium">Nenhuma pergunta criada.</p>
+                <p class="text-sm">Clique em "Adicionar Pergunta" para começar.</p>
+            </div>
+            } @else {
+            <div class="grid gap-4">
+                @for (q of questions(); track q.id; let idx = $index) {
+                <div
+                    class="bg-slate-800 border border-slate-700 p-4 rounded-xl flex items-center gap-4 group hover:border-indigo-500/50 transition-colors">
+                    <div
+                        class="bg-slate-700 w-10 h-10 rounded-lg flex items-center justify-center font-bold text-slate-300 shrink-0">
+                        {{ idx + 1 }}
+                    </div>
+
+                    <div class="flex-1 min-w-0">
+                        <h3 class="font-bold text-white truncate text-lg">{{ q.text }}</h3>
+                        <div class="flex items-center gap-3 text-xs text-slate-400 mt-1">
+                            <span class="flex items-center gap-1"><lucide-angular [img]="Clock"
+                                    [size]="12"></lucide-angular> {{ q.timeLimit }}s</span>
+                            <span>•</span>
+                            <!-- Note: In template we need to access items manually or use a pipe, but simple filter here is fine -->
+                            <span>{{ countCorrect(q) }} resposta(s) correta(s)</span>
+                            <!-- The above pipe usage is wrong for array filtering. Let's precise logic -->
+                        </div>
+                    </div>
+
+                    <div
+                        class="flex items-center gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                        <button (click)="openEditor(q)" class="p-2 text-blue-400 hover:bg-blue-400/10 rounded-lg"
+                            title="Editar">
+                            <lucide-angular [img]="Edit3" [size]="18"></lucide-angular>
+                        </button>
+                        <button (click)="deleteQuestion(q.id)" class="p-2 text-red-400 hover:bg-red-400/10 rounded-lg"
+                            title="Excluir">
+                            <lucide-angular [img]="Trash2" [size]="18"></lucide-angular>
+                        </button>
+                    </div>
+                </div>
+                }
+            </div>
+            }
+        </div>
+
+    </div>
+</div>
+}
+
+<!-- Shape Icon Template -->
+<ng-template #shapeIcon let-shape let-size="size">
+    @switch (shape) {
+    @case ('triangle') { <lucide-angular [img]="Triangle" [size]="size" fill="currentColor"></lucide-angular> }
+    @case ('diamond') { <div [style.width.px]="size" [style.height.px]="size" class="bg-current rotate-45"></div> }
+    @case ('circle') { <lucide-angular [img]="Circle" [size]="size" fill="currentColor"></lucide-angular> }
+    @case ('square') { <lucide-angular [img]="Square" [size]="size" fill="currentColor"></lucide-angular> }
+    }
+</ng-template>

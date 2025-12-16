@@ -1,0 +1,100 @@
+<div class="w-full max-w-6xl mx-auto p-4 animate-in fade-in duration-500">
+
+    <header class="text-center mb-10">
+        <div class="inline-flex items-center justify-center p-3 bg-violet-500/20 rounded-full mb-4">
+            <lucide-angular [img]="Users" class="text-violet-400" [size]="32"></lucide-angular>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-black text-white mb-2">
+            Gerador de <span class="text-violet-400">Times</span>
+        </h1>
+        <p class="text-slate-400">Divida grupos de forma justa e aleatória em segundos.</p>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+        <!-- Left Column: Input -->
+        <div class="lg:col-span-4 space-y-6">
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl">
+                <div class="flex justify-between items-center mb-4">
+                    <label class="text-slate-200 font-bold flex items-center gap-2">
+                        <lucide-angular [img]="UserPlus" [size]="18" class="text-violet-400"></lucide-angular>
+                        Participantes
+                    </label>
+                    <button (click)="clearAll()"
+                        class="text-xs text-red-400 hover:text-red-300 flex items-center gap-1">
+                        <lucide-angular [img]="Trash2" [size]="14"></lucide-angular> Limpar
+                    </button>
+                </div>
+
+                <textarea [ngModel]="namesInput()" (ngModelChange)="namesInput.set($event)"
+                    placeholder="Cole a lista de nomes aqui (um por linha)..."
+                    class="w-full h-64 bg-slate-900 border border-slate-600 rounded-xl p-4 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all resize-none custom-scrollbar font-mono text-sm mb-4"></textarea>
+
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-slate-400">Número de Times</span>
+                            <span class="text-violet-400 font-bold text-lg">{{ numberOfTeams() }}</span>
+                        </div>
+                        <input type="range" min="2" max="20" [ngModel]="numberOfTeams()"
+                            (change)="onRangeChange($event)" (input)="onRangeChange($event)"
+                            class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-violet-500" />
+                        <div class="flex justify-between text-xs text-slate-600 mt-1">
+                            <span>2</span>
+                            <span>20</span>
+                        </div>
+                    </div>
+
+                    <button (click)="handleGenerate()" [disabled]="!namesInput().trim()"
+                        class="w-full bg-violet-600 hover:bg-violet-500 disabled:bg-slate-700 disabled:text-slate-500 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95">
+                        <lucide-angular [img]="Shuffle" [size]="20"></lucide-angular> Gerar Times
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Output -->
+        <div class="lg:col-span-8">
+            @if (!isGenerated()) {
+            <div
+                class="h-full min-h-[400px] flex flex-col items-center justify-center border-2 border-dashed border-slate-700 rounded-2xl bg-slate-800/30 text-slate-500">
+                <lucide-angular [img]="Grid" [size]="64" class="mb-4 opacity-20"></lucide-angular>
+                <p class="text-lg font-medium">Aguardando geração...</p>
+                <p class="text-sm">Adicione nomes e clique em Gerar.</p>
+            </div>
+            } @else {
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in slide-in-from-bottom-4 duration-500">
+                @for (members of teams(); track $index) {
+                <div
+                    class="bg-slate-800 border-t-4 border-violet-500 rounded-xl p-5 shadow-lg hover:shadow-violet-500/10 transition-shadow">
+                    <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
+                        <h3 class="font-bold text-white text-lg">Time {{ $index + 1 }}</h3>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded-full">{{ members.length
+                                }}</span>
+                            <button (click)="copyTeam($index, members)"
+                                class="text-slate-400 hover:text-white transition-colors" title="Copiar lista">
+                                @if (copiedIndex() === $index) {
+                                <lucide-angular [img]="Check" [size]="18" class="text-emerald-400"></lucide-angular>
+                                } @else {
+                                <lucide-angular [img]="Copy" [size]="18"></lucide-angular>
+                                }
+                            </button>
+                        </div>
+                    </div>
+                    <ul class="space-y-2">
+                        @for (member of members; track $index) {
+                        <li class="text-slate-300 flex items-center gap-2 text-sm">
+                            <div class="w-1.5 h-1.5 bg-violet-400/50 rounded-full"></div>
+                            {{ member }}
+                        </li>
+                        }
+                    </ul>
+                </div>
+                }
+            </div>
+            }
+        </div>
+
+    </div>
+</div>

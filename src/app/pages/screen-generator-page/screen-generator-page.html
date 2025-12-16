@@ -1,0 +1,204 @@
+<div class="w-full min-h-screen p-4 animate-in fade-in duration-500 flex flex-col items-center"
+    (mousemove)="handleMouseMove($event)" (mouseup)="handleMouseUp()" (mouseleave)="handleMouseUp()">
+
+    <header class="text-center mb-6">
+        <div class="inline-flex items-center justify-center p-3 bg-blue-600/20 rounded-full mb-4">
+            <lucide-angular [img]="Monitor" class="text-blue-400" [size]="32"></lucide-angular>
+        </div>
+        <h1 class="text-4xl font-black text-white mb-2">
+            Gerador de <span class="text-blue-400">Telão</span>
+        </h1>
+        <p class="text-slate-400">Crie slides em 4K (16:9) para suas apresentações.</p>
+    </header>
+
+    <!-- Main Layout: Sidebar + Stage -->
+    <div class="w-full max-w-[1600px] flex flex-col lg:flex-row gap-6 items-start">
+
+        <!-- Toolbar / Sidebar -->
+        <div
+            class="w-full lg:w-80 bg-slate-800 border border-slate-700 rounded-2xl p-6 flex flex-col gap-6 shadow-xl z-20 order-2 lg:order-1">
+
+            <!-- General Actions -->
+            <div class="space-y-3">
+                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Adicionar</h3>
+                <div class="grid grid-cols-2 gap-2">
+                    <button (click)="addText()"
+                        class="flex flex-col items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 p-4 rounded-xl transition-colors">
+                        <lucide-angular [img]="Type" [size]="24" class="text-blue-400"></lucide-angular>
+                        <span class="text-sm font-bold">Texto</span>
+                    </button>
+                    <label
+                        class="flex flex-col items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 p-4 rounded-xl transition-colors cursor-pointer">
+                        <lucide-angular [img]="ImageIcon" [size]="24" class="text-emerald-400"></lucide-angular>
+                        <span class="text-sm font-bold">Imagem</span>
+                        <input type="file" accept="image/*" (change)="addImage($event)" class="hidden" />
+                    </label>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Fundo</h3>
+                <div class="flex gap-2 flex-wrap">
+                    @for (c of COLORS; track c) {
+                    <button (click)="backgroundColor.set(c)" class="w-8 h-8 rounded-full border-2"
+                        [ngClass]="backgroundColor() === c ? 'border-white scale-110' : 'border-transparent hover:border-slate-500'"
+                        [style.backgroundColor]="c"></button>
+                    }
+                    <input type="color" [ngModel]="backgroundColor()" (ngModelChange)="backgroundColor.set($event)"
+                        class="w-8 h-8 p-0 bg-transparent border-0 rounded-full overflow-hidden cursor-pointer" />
+                </div>
+            </div>
+
+            <div class="h-px bg-slate-700 my-2"></div>
+
+            <!-- Contextual Properties -->
+            @if (selectedElement(); as selected) {
+            <div class="space-y-4 animate-in slide-in-from-left-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                        <lucide-angular [img]="Palette" [size]="16"></lucide-angular> Editar {{ selected.type === 'text'
+                        ? 'Texto' : 'Imagem' }}
+                    </h3>
+                    <button (click)="deleteElement(selected.id)" class="text-red-400 hover:text-red-300 p-1">
+                        <lucide-angular [img]="Trash2" [size]="18"></lucide-angular>
+                    </button>
+                </div>
+
+                @if (selected.type === 'text') {
+
+                <textarea [ngModel]="selected.content" (ngModelChange)="updateSelectedElement({ content: $event })"
+                    class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-sm text-white resize-y min-h-[80px]"></textarea>
+
+                <div class="space-y-2">
+                    <label class="text-xs text-slate-400">Tamanho da Fonte</label>
+                    <input type="range" min="12" max="200" [ngModel]="selected.style.fontSize"
+                        (ngModelChange)="updateSelectedElement({ fontSize: $event })" class="w-full accent-blue-500" />
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs text-slate-400">Fonte</label>
+                    <select [ngModel]="selected.style.fontFamily"
+                        (ngModelChange)="updateSelectedElement({ fontFamily: $event })"
+                        class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-sm">
+                        @for (f of FONTS; track f.value) {
+                        <option [value]="f.value">{{ f.name }}</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="flex gap-2">
+                    <button
+                        (click)="updateSelectedElement({ fontWeight: selected.style.fontWeight === 'bold' ? 'normal' : 'bold' })"
+                        class="p-2 rounded transition-colors"
+                        [ngClass]="selected.style.fontWeight === 'bold' ? 'bg-blue-600' : 'bg-slate-700'">
+                        <lucide-angular [img]="Bold" [size]="16"></lucide-angular>
+                    </button>
+                    <button
+                        (click)="updateSelectedElement({ fontStyle: selected.style.fontStyle === 'italic' ? 'normal' : 'italic' })"
+                        class="p-2 rounded transition-colors"
+                        [ngClass]="selected.style.fontStyle === 'italic' ? 'bg-blue-600' : 'bg-slate-700'">
+                        <lucide-angular [img]="Italic" [size]="16"></lucide-angular>
+                    </button>
+                    <div class="w-px bg-slate-600 mx-1"></div>
+                    <button (click)="updateSelectedElement({ textAlign: 'left' })" class="p-2 rounded transition-colors"
+                        [ngClass]="selected.style.textAlign === 'left' ? 'bg-blue-600' : 'bg-slate-700'"><lucide-angular
+                            [img]="AlignLeft" [size]="16"></lucide-angular></button>
+                    <button (click)="updateSelectedElement({ textAlign: 'center' })"
+                        class="p-2 rounded transition-colors"
+                        [ngClass]="selected.style.textAlign === 'center' ? 'bg-blue-600' : 'bg-slate-700'"><lucide-angular
+                            [img]="AlignCenter" [size]="16"></lucide-angular></button>
+                    <button (click)="updateSelectedElement({ textAlign: 'right' })"
+                        class="p-2 rounded transition-colors"
+                        [ngClass]="selected.style.textAlign === 'right' ? 'bg-blue-600' : 'bg-slate-700'"><lucide-angular
+                            [img]="AlignRight" [size]="16"></lucide-angular></button>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs text-slate-400">Cor do Texto</label>
+                    <div class="flex flex-wrap gap-2">
+                        @for (c of COLORS; track c) {
+                        <button (click)="updateSelectedElement({ color: c })" class="w-6 h-6 rounded-full border"
+                            [ngClass]="selected.style.color === c ? 'border-white' : 'border-slate-600'"
+                            [style.backgroundColor]="c"></button>
+                        }
+                    </div>
+                </div>
+
+                } @else if (selected.type === 'image') {
+                <div class="space-y-2">
+                    <label class="text-xs text-slate-400">Tamanho</label>
+                    <!-- Note: Input range emits string, handled in component logic if needed, but here simple binding works if logic converts -->
+                    <!-- Actually, for complex aspect ratio logic, we might need a dedicated handler in TS, but let's try inline first or helper -->
+                    <input type="range" min="50" max="1000" [ngModel]="selected.width || 100"
+                        (ngModelChange)="updateSelectedElement({ width: $event, maintainRatio: true })"
+                        class="w-full accent-blue-500" />
+                    <!-- Note: The maintainRatio flag is a trick, we need to handle it in updateElement -->
+                </div>
+                }
+
+                <button (click)="bringToFront(selected.id)"
+                    class="w-full flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors">
+                    <lucide-angular [img]="Layers" [size]="14"></lucide-angular> Trazer para frente
+                </button>
+
+            </div>
+            } @else {
+            <div class="flex-1 flex flex-col items-center justify-center text-slate-500 opacity-50">
+                <lucide-angular [img]="Move" [size]="48" class="mb-2"></lucide-angular>
+                <p class="text-sm text-center">Selecione um elemento para editar</p>
+            </div>
+            }
+
+            <!-- Actions -->
+            <div class="mt-auto pt-4 border-t border-slate-700">
+                <button (click)="handleExport()" [disabled]="isExporting()"
+                    class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+                    @if (isExporting()) {
+                    <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    } @else {
+                    <lucide-angular [img]="Download" [size]="20"></lucide-angular>
+                    }
+                    <span>Baixar 4K</span>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Stage Area -->
+        <div
+            class="flex-1 w-full bg-slate-950 rounded-2xl p-4 lg:p-8 flex items-center justify-center overflow-hidden border border-slate-800 shadow-inner order-1 lg:order-2">
+
+            <div class="relative w-full max-w-full aspect-video shadow-2xl overflow-hidden select-none group" #stageRef
+                [style.backgroundColor]="backgroundColor()">
+                <!-- Grid Overlay -->
+                <div class="absolute inset-0 pointer-events-none opacity-5"
+                    style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 40px 40px;">
+                </div>
+
+                @for (el of elements(); track el.id) {
+                <div (mousedown)="handleMouseDown($event, el.id)"
+                    class="absolute cursor-move hover:outline hover:outline-1 hover:outline-blue-400/50"
+                    [ngClass]="selectedId() === el.id ? 'outline outline-2 outline-blue-500' : ''"
+                    [style.left.%]="(el.x / 1920) * 100" [style.top.%]="(el.y / 1080) * 100"
+                    [style.color]="el.style.color" [style.font-family]="el.style.fontFamily"
+                    [style.font-size]="'clamp(12px, ' + (el.style.fontSize! / 19.2) + 'vw, ' + el.style.fontSize + 'px)'"
+                    [style.font-weight]="el.style.fontWeight" [style.font-style]="el.style.fontStyle"
+                    [style.text-align]="el.style.textAlign" [style.z-index]="el.style.zIndex"
+                    [style.width.%]="el.width ? (el.width / 1920) * 100 : null" [style.width]="el.width ? null : 'auto'"
+                    style="padding: 4px;">
+                    @if (el.type === 'text') {
+                    <p class="whitespace-pre-wrap leading-tight" style="pointer-events: none;">
+                        {{ el.content }}
+                    </p>
+                    } @else {
+                    <img [src]="el.content" alt="element" class="w-full h-auto block pointer-events-none select-none"
+                        draggable="false" />
+                    }
+                </div>
+                }
+            </div>
+
+        </div>
+
+    </div>
+</div>
