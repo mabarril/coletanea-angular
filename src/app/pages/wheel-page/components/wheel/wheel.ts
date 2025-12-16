@@ -20,9 +20,9 @@ export class Wheel {
 
   readonly ChevronDown = ChevronDown;
 
-  private radius = 100;
-  private center = 100;
-  private totalSize = 200;
+  private radius = 200;
+  private center = 200;
+  private totalSize = 400;
 
   isValid = computed(() => this.items().length >= 2);
 
@@ -48,7 +48,8 @@ export class Wheel {
 
       const midAngle = startAngle + sliceAngle / 2;
       const midRad = (midAngle - 90) * (Math.PI / 180);
-      const textRadius = this.radius * 0.65;
+      // Start text near the center button (radius ~15-20), so we start at 0.35
+      const textRadius = this.radius * 0.35;
       const textX = this.center + textRadius * Math.cos(midRad);
       const textY = this.center + textRadius * Math.sin(midRad);
 

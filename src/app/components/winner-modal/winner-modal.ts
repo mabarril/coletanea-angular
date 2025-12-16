@@ -2,6 +2,8 @@ import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, X, Trophy } from 'lucide-angular';
 
+import { WheelItem } from '../../types';
+
 @Component({
   selector: 'app-winner-modal',
   standalone: true,
@@ -10,7 +12,7 @@ import { LucideAngularModule, X, Trophy } from 'lucide-angular';
   styleUrl: './winner-modal.css',
 })
 export class WinnerModal {
-  winner = input<string | null>(null);
+  winner = input<WheelItem | null>(null);
   close = output<void>();
 
   readonly X = X;

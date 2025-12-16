@@ -34,7 +34,7 @@ export class WheelPage {
 
   isSpinning = signal(false);
   rotation = signal(0);
-  winner = signal<string | null>(null);
+  winner = signal<WheelItem | null>(null);
 
   spinDuration = SPIN_DURATION_SECONDS;
 
@@ -146,7 +146,7 @@ export class WheelPage {
     // 4. Wait for animation
     setTimeout(() => {
       this.isSpinning.set(false);
-      this.winner.set(winnerItem.label);
+      this.winner.set(winnerItem);
       this.playSound();
       this.triggerConfetti();
 
