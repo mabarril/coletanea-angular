@@ -1,5 +1,5 @@
 import { Component, computed, signal, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { LucideAngularModule, Sparkles } from 'lucide-angular';
 import confetti from 'canvas-confetti';
 
@@ -14,7 +14,7 @@ const generateId = () => Math.random().toString(36).substr(2, 9);
 @Component({
   selector: 'app-wheel-page',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, Wheel, WheelControls, WinnerModal],
+  imports: [CommonModule, LucideAngularModule, Wheel, WheelControls, WinnerModal, NgOptimizedImage],
   templateUrl: './wheel-page.html',
   styleUrl: './wheel-page.css',
 })

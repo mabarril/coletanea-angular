@@ -9,7 +9,7 @@
 
     <!-- Main Layout -->
     <main
-        class="w-full max-w-[1800px] grid grid-cols-1 lg:grid-cols-[1fr_450px] gap-8 items-start justify-items-center px-4 md:px-8">
+        class="w-full max-w-[1200px] grid grid-cols-1 lg:grid-cols-[1fr_450px] gap-8 items-start justify-items-center px-4 md:px-8">
 
         <!-- Left Column: Wheel -->
         <section class="w-full flex justify-center order-2 lg:order-1">
@@ -18,7 +18,7 @@
         </section>
 
         <!-- Right Column: Controls -->
-        <section class="w-full max-w-[450px] flex justify-center lg:justify-start order-1 lg:order-2 h-full">
+        <section class="w-full max-w-[900] flex justify-center lg:justify-start order-1 lg:order-2 h-full">
             <app-wheel-controls [items]="items()" [activeCount]="activeItems().length" [isSpinning]="isSpinning()"
                 (addItem)="addItem($event)" (removeItem)="removeItem($event)"
                 (updateQuantity)="updateQuantity($event)"></app-wheel-controls>

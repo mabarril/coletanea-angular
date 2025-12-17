@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { LucideAngularModule, LayoutGrid, List, Sparkles, Trophy, ArrowRight, QrCode, Timer, Scissors, Users, Monitor, Gamepad2 } from 'lucide-angular';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-landing-page',
   standalone: true,
-  imports: [RouterLink, LucideAngularModule, CommonModule],
+  imports: [RouterLink, LucideAngularModule, CommonModule, NgOptimizedImage],
   templateUrl: './landing-page.html',
   styleUrl: './landing-page.css',
 })
