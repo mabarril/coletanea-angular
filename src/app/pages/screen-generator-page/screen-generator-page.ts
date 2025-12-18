@@ -29,6 +29,7 @@ interface ScreenElement {
     opacity?: number;
     textShadow?: string;
     boxShadow?: string;
+    shadowColor?: string;
     zIndex: number;
   };
 }
@@ -57,6 +58,14 @@ const COLORS = [
   }
 })
 export class ScreenGeneratorPage {
+  // Constants
+  readonly FONTS = FONTS;
+  readonly COLORS = COLORS;
+
+  isNativeFont(fontFamily: string | undefined): boolean {
+    if (!fontFamily) return true;
+    return FONTS.some(f => f.value === fontFamily);
+  }
   // ViewChild
   @ViewChild('stageRef') stageRef!: ElementRef<HTMLDivElement>;
 
@@ -75,16 +84,20 @@ export class ScreenGeneratorPage {
   readonly AlignRight = AlignRight;
   readonly Layers = Layers;
 
-  // Constants
-  readonly FONTS = FONTS;
-  readonly COLORS = COLORS;
-
   // State
   elements = signal<ScreenElement[]>([]);
   selectedId = signal<string | null>(null);
   backgroundColor = signal('#1e293b');
   isDragging = signal(false);
   isExporting = signal(false);
+  localFonts = signal<{ name: string, value: string }[]>([]);
+
+  // Available fonts (base + local)
+  availableFonts = computed(() => [
+    ...FONTS,
+    ...this.localFonts(),
+    { name: '--- Personalizada ---', value: 'custom' }
+  ]);
 
   // Private state for drag logic
   private dragOffset = { x: 0, y: 0 };
@@ -92,7 +105,41 @@ export class ScreenGeneratorPage {
   // Helper computed
   selectedElement = computed(() => this.elements().find(e => e.id === this.selectedId()));
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.checkLocalFontSupport();
+    }
+  }
+
+  async checkLocalFontSupport() {
+    // Check if the API exists
+    if ('queryLocalFonts' in window) {
+      try {
+        // We don't auto-query to avoid immediate permission prompt, 
+        // but we could. For now, let's just leave it ready.
+      } catch (e) {
+        console.warn("Local font access denied or failed", e);
+      }
+    }
+  }
+
+  async loadLocalFonts() {
+    if ('queryLocalFonts' in window) {
+      try {
+        const fonts = await (window as any).queryLocalFonts();
+        const uniqueFonts = Array.from(new Set(fonts.map((f: any) => f.family)))
+          .sort()
+          .map((family: any) => ({ name: family, value: family }));
+
+        this.localFonts.set(uniqueFonts);
+      } catch (e) {
+        console.error("Error querying local fonts", e);
+        alert("Não foi possível acessar as fontes locais. Verifique as permissões do navegador.");
+      }
+    } else {
+      alert("Seu navegador não suporta acesso direto a fontes locais. Você pode digitar o nome da fonte manualmente.");
+    }
+  }
 
   addText() {
     const newEl: ScreenElement = {
@@ -109,6 +156,7 @@ export class ScreenGeneratorPage {
         textAlign: 'left',
         opacity: 1,
         textShadow: 'none',
+        shadowColor: 'rgba(0,0,0,0.5)',
         zIndex: this.elements().length + 1
       }
     };
@@ -141,6 +189,7 @@ export class ScreenGeneratorPage {
               style: {
                 opacity: 1,
                 boxShadow: 'none',
+                shadowColor: 'rgba(0,0,0,0.5)',
                 zIndex: this.elements().length + 1
               }
             };
@@ -170,7 +219,7 @@ export class ScreenGeneratorPage {
         }
 
         Object.entries(updates).forEach(([key, value]) => {
-          if (['color', 'fontSize', 'fontFamily', 'fontWeight', 'fontStyle', 'textAlign', 'backgroundColor', 'borderRadius', 'opacity', 'textShadow', 'boxShadow', 'zIndex'].includes(key)) {
+          if (['color', 'fontSize', 'fontFamily', 'fontWeight', 'fontStyle', 'textAlign', 'backgroundColor', 'borderRadius', 'opacity', 'textShadow', 'boxShadow', 'shadowColor', 'zIndex'].includes(key)) {
             styleUpdates[key] = value;
           } else {
             // Coerce width and height to numbers if they are strings from input range

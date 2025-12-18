@@ -78,14 +78,34 @@
                     </div>
 
                     <div class="space-y-2">
-                        <label class="text-xs text-slate-400">Fonte</label>
+                        <div class="flex justify-between items-center">
+                            <label class="text-xs text-slate-400">Fonte</label>
+                            @if (localFonts().length === 0) {
+                            <button (click)="loadLocalFonts()"
+                                class="text-[10px] text-blue-400 font-bold hover:underline uppercase tracking-tighter">
+                                Carregar do PC
+                            </button>
+                            }
+                        </div>
                         <select [ngModel]="selected.style.fontFamily"
                             (ngModelChange)="updateSelectedElement({ fontFamily: $event })"
                             class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-sm">
-                            @for (f of FONTS; track f.value) {
+                            @for (f of availableFonts(); track f.value) {
                             <option [value]="f.value">{{ f.name }}</option>
                             }
                         </select>
+
+                        <!-- Input manual para quando a API não funciona ou usuário quer algo específico -->
+                        @if (selected.style.fontFamily === 'custom' || !isNativeFont(selected.style.fontFamily)) {
+                        <div class="space-y-1 mt-2">
+                            <label class="text-[10px] text-slate-500 uppercase">Nome da Fonte no PC</label>
+                            <input type="text"
+                                [ngModel]="selected.style.fontFamily === 'custom' ? '' : selected.style.fontFamily"
+                                (ngModelChange)="updateSelectedElement({ fontFamily: $event })"
+                                placeholder="Ex: Arial, Tahoma, Comic Sans..."
+                                class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-xs text-white" />
+                        </div>
+                        }
                     </div>
 
                     <div class="flex gap-2">
@@ -117,15 +137,22 @@
                     </div>
 
                     <div class="space-y-2">
-                        <label class="text-xs text-slate-400">Sombras</label>
+                        <div class="flex justify-between items-center">
+                            <label class="text-xs text-slate-400">Sombras</label>
+                            <input type="color" [ngModel]="selected.style.shadowColor || '#000000'"
+                                (ngModelChange)="updateSelectedElement({ shadowColor: $event })"
+                                class="w-6 h-6 p-0 bg-transparent border-0 rounded overflow-hidden cursor-pointer" />
+                        </div>
                         <div class="flex gap-2">
                             <button (click)="updateSelectedElement({ textShadow: 'none' })"
                                 class="flex-1 text-[10px] font-bold py-1 bg-slate-700 rounded border border-transparent shadow-sm transition-all"
                                 [ngClass]="selected.style.textShadow === 'none' ? 'bg-blue-600 border-white/20' : ''">NENHUMA</button>
-                            <button (click)="updateSelectedElement({ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' })"
+                            <button
+                                (click)="updateSelectedElement({ textShadow: '2px 2px 4px ' + (selected.style.shadowColor || 'rgba(0,0,0,0.5)') })"
                                 class="flex-1 text-[10px] font-bold py-1 bg-slate-700 rounded border border-transparent shadow-sm transition-all"
                                 [ngClass]="selected.style.textShadow !== 'none' && selected.style.textShadow?.includes('4px') ? 'bg-blue-600 border-white/20' : ''">SUAVE</button>
-                            <button (click)="updateSelectedElement({ textShadow: '4px 4px 8px rgba(0,0,0,0.8)' })"
+                            <button
+                                (click)="updateSelectedElement({ textShadow: '4px 4px 8px ' + (selected.style.shadowColor || 'rgba(0,0,0,0.8)') })"
                                 class="flex-1 text-[10px] font-bold py-1 bg-slate-700 rounded border border-transparent shadow-sm transition-all"
                                 [ngClass]="selected.style.textShadow !== 'none' && selected.style.textShadow?.includes('8px') ? 'bg-blue-600 border-white/20' : ''">FORTE</button>
                         </div>
@@ -154,15 +181,22 @@
                         Preencher Tela (Background)
                     </button>
                     <div class="space-y-2">
-                        <label class="text-xs text-slate-400">Sombras</label>
+                        <div class="flex justify-between items-center">
+                            <label class="text-xs text-slate-400">Sombras</label>
+                            <input type="color" [ngModel]="selected.style.shadowColor || '#000000'"
+                                (ngModelChange)="updateSelectedElement({ shadowColor: $event })"
+                                class="w-6 h-6 p-0 bg-transparent border-0 rounded overflow-hidden cursor-pointer" />
+                        </div>
                         <div class="flex gap-2">
                             <button (click)="updateSelectedElement({ boxShadow: 'none' })"
                                 class="flex-1 text-[10px] font-bold py-1 bg-slate-700 rounded border border-transparent shadow-sm transition-all"
                                 [ngClass]="selected.style.boxShadow === 'none' ? 'bg-blue-600 border-white/20' : ''">NENHUMA</button>
-                            <button (click)="updateSelectedElement({ boxShadow: '0 4px 8px rgba(0,0,0,0.5)' })"
+                            <button
+                                (click)="updateSelectedElement({ boxShadow: '0 4px 8px ' + (selected.style.shadowColor || 'rgba(0,0,0,0.5)') })"
                                 class="flex-1 text-[10px] font-bold py-1 bg-slate-700 rounded border border-transparent shadow-sm transition-all"
                                 [ngClass]="selected.style.boxShadow !== 'none' && selected.style.boxShadow?.includes('8px') ? 'bg-blue-600 border-white/20' : ''">SUAVE</button>
-                            <button (click)="updateSelectedElement({ boxShadow: '0 10px 20px rgba(0,0,0,0.6)' })"
+                            <button
+                                (click)="updateSelectedElement({ boxShadow: '0 10px 20px ' + (selected.style.shadowColor || 'rgba(0,0,0,0.6)') })"
                                 class="flex-1 text-[10px] font-bold py-1 bg-slate-700 rounded border border-transparent shadow-sm transition-all"
                                 [ngClass]="selected.style.boxShadow !== 'none' && selected.style.boxShadow?.includes('20px') ? 'bg-blue-600 border-white/20' : ''">PROPRIA</button>
                         </div>
