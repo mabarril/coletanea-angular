@@ -52,102 +52,185 @@
             <div class="h-px bg-slate-700 my-2"></div>
 
             <!-- Contextual Properties -->
-            @if (selectedElement(); as selected) {
-            <div class="space-y-4 animate-in slide-in-from-left-4">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                        <lucide-angular [img]="Palette" [size]="16"></lucide-angular> Editar {{ selected.type === 'text'
-                        ? 'Texto' : 'Imagem' }}
-                    </h3>
-                    <button (click)="deleteElement(selected.id)" class="text-red-400 hover:text-red-300 p-1">
-                        <lucide-angular [img]="Trash2" [size]="18"></lucide-angular>
-                    </button>
-                </div>
-
-                @if (selected.type === 'text') {
-
-                <textarea [ngModel]="selected.content" (ngModelChange)="updateSelectedElement({ content: $event })"
-                    class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-sm text-white resize-y min-h-[80px]"></textarea>
-
-                <div class="space-y-2">
-                    <label class="text-xs text-slate-400">Tamanho da Fonte</label>
-                    <input type="range" min="12" max="200" [ngModel]="selected.style.fontSize"
-                        (ngModelChange)="updateSelectedElement({ fontSize: $event })" class="w-full accent-blue-500" />
-                </div>
-
-                <div class="space-y-2">
-                    <label class="text-xs text-slate-400">Fonte</label>
-                    <select [ngModel]="selected.style.fontFamily"
-                        (ngModelChange)="updateSelectedElement({ fontFamily: $event })"
-                        class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-sm">
-                        @for (f of FONTS; track f.value) {
-                        <option [value]="f.value">{{ f.name }}</option>
-                        }
-                    </select>
-                </div>
-
-                <div class="flex gap-2">
-                    <button
-                        (click)="updateSelectedElement({ fontWeight: selected.style.fontWeight === 'bold' ? 'normal' : 'bold' })"
-                        class="p-2 rounded transition-colors"
-                        [ngClass]="selected.style.fontWeight === 'bold' ? 'bg-blue-600' : 'bg-slate-700'">
-                        <lucide-angular [img]="Bold" [size]="16"></lucide-angular>
-                    </button>
-                    <button
-                        (click)="updateSelectedElement({ fontStyle: selected.style.fontStyle === 'italic' ? 'normal' : 'italic' })"
-                        class="p-2 rounded transition-colors"
-                        [ngClass]="selected.style.fontStyle === 'italic' ? 'bg-blue-600' : 'bg-slate-700'">
-                        <lucide-angular [img]="Italic" [size]="16"></lucide-angular>
-                    </button>
-                    <div class="w-px bg-slate-600 mx-1"></div>
-                    <button (click)="updateSelectedElement({ textAlign: 'left' })" class="p-2 rounded transition-colors"
-                        [ngClass]="selected.style.textAlign === 'left' ? 'bg-blue-600' : 'bg-slate-700'"><lucide-angular
-                            [img]="AlignLeft" [size]="16"></lucide-angular></button>
-                    <button (click)="updateSelectedElement({ textAlign: 'center' })"
-                        class="p-2 rounded transition-colors"
-                        [ngClass]="selected.style.textAlign === 'center' ? 'bg-blue-600' : 'bg-slate-700'"><lucide-angular
-                            [img]="AlignCenter" [size]="16"></lucide-angular></button>
-                    <button (click)="updateSelectedElement({ textAlign: 'right' })"
-                        class="p-2 rounded transition-colors"
-                        [ngClass]="selected.style.textAlign === 'right' ? 'bg-blue-600' : 'bg-slate-700'"><lucide-angular
-                            [img]="AlignRight" [size]="16"></lucide-angular></button>
-                </div>
-
-                <div class="space-y-2">
-                    <label class="text-xs text-slate-400">Cor do Texto</label>
-                    <div class="flex flex-wrap gap-2">
-                        @for (c of COLORS; track c) {
-                        <button (click)="updateSelectedElement({ color: c })" class="w-6 h-6 rounded-full border"
-                            [ngClass]="selected.style.color === c ? 'border-white' : 'border-slate-600'"
-                            [style.backgroundColor]="c"></button>
-                        }
+            <div class="flex-1 overflow-hidden flex flex-col min-h-0">
+                @if (selectedElement(); as selected) {
+                <div class="space-y-4 animate-in slide-in-from-left-4 overflow-y-auto pr-2 custom-scrollbar pb-4 block">
+                    <div class="flex justify-between items-center sticky top-0 bg-slate-800 z-10 py-1">
+                        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                            <lucide-angular [img]="Palette" [size]="16"></lucide-angular> Editar {{ selected.type ===
+                            'text'
+                            ? 'Texto' : 'Imagem' }}
+                        </h3>
+                        <button (click)="deleteElement(selected.id)" class="text-red-400 hover:text-red-300 p-1">
+                            <lucide-angular [img]="Trash2" [size]="18"></lucide-angular>
+                        </button>
                     </div>
-                </div>
 
-                } @else if (selected.type === 'image') {
-                <div class="space-y-2">
-                    <label class="text-xs text-slate-400">Tamanho</label>
-                    <!-- Note: Input range emits string, handled in component logic if needed, but here simple binding works if logic converts -->
-                    <!-- Actually, for complex aspect ratio logic, we might need a dedicated handler in TS, but let's try inline first or helper -->
-                    <input type="range" min="50" max="1000" [ngModel]="selected.width || 100"
-                        (ngModelChange)="updateSelectedElement({ width: $event, maintainRatio: true })"
-                        class="w-full accent-blue-500" />
-                    <!-- Note: The maintainRatio flag is a trick, we need to handle it in updateElement -->
+                    @if (selected.type === 'text') {
+                    <textarea [ngModel]="selected.content" (ngModelChange)="updateSelectedElement({ content: $event })"
+                        class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-sm text-white resize-y min-h-[80px]"></textarea>
+
+                    <div class="space-y-2">
+                        <label class="text-xs text-slate-400">Tamanho da Fonte</label>
+                        <input type="range" min="12" max="200" [ngModel]="selected.style.fontSize"
+                            (ngModelChange)="updateSelectedElement({ fontSize: +$event })"
+                            class="w-full accent-blue-500" />
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-xs text-slate-400">Fonte</label>
+                        <select [ngModel]="selected.style.fontFamily"
+                            (ngModelChange)="updateSelectedElement({ fontFamily: $event })"
+                            class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-sm">
+                            @for (f of FONTS; track f.value) {
+                            <option [value]="f.value">{{ f.name }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button
+                            (click)="updateSelectedElement({ fontWeight: selected.style.fontWeight === 'bold' ? 'normal' : 'bold' })"
+                            class="p-2 rounded transition-colors"
+                            [ngClass]="selected.style.fontWeight === 'bold' ? 'bg-blue-600' : 'bg-slate-700'">
+                            <lucide-angular [img]="Bold" [size]="16"></lucide-angular>
+                        </button>
+                        <button
+                            (click)="updateSelectedElement({ fontStyle: selected.style.fontStyle === 'italic' ? 'normal' : 'italic' })"
+                            class="p-2 rounded transition-colors"
+                            [ngClass]="selected.style.fontStyle === 'italic' ? 'bg-blue-600' : 'bg-slate-700'">
+                            <lucide-angular [img]="Italic" [size]="16"></lucide-angular>
+                        </button>
+                        <div class="w-px bg-slate-600 mx-1"></div>
+                        <button (click)="updateSelectedElement({ textAlign: 'left' })"
+                            class="p-2 rounded transition-colors"
+                            [ngClass]="selected.style.textAlign === 'left' ? 'bg-blue-600' : 'bg-slate-700'"><lucide-angular
+                                [img]="AlignLeft" [size]="16"></lucide-angular></button>
+                        <button (click)="updateSelectedElement({ textAlign: 'center' })"
+                            class="p-2 rounded transition-colors"
+                            [ngClass]="selected.style.textAlign === 'center' ? 'bg-blue-600' : 'bg-slate-700'"><lucide-angular
+                                [img]="AlignCenter" [size]="16"></lucide-angular></button>
+                        <button (click)="updateSelectedElement({ textAlign: 'right' })"
+                            class="p-2 rounded transition-colors"
+                            [ngClass]="selected.style.textAlign === 'right' ? 'bg-blue-600' : 'bg-slate-700'"><lucide-angular
+                                [img]="AlignRight" [size]="16"></lucide-angular></button>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-xs text-slate-400">Sombras</label>
+                        <div class="flex gap-2">
+                            <button (click)="updateSelectedElement({ textShadow: 'none' })"
+                                class="flex-1 text-[10px] font-bold py-1 bg-slate-700 rounded border border-transparent shadow-sm transition-all"
+                                [ngClass]="selected.style.textShadow === 'none' ? 'bg-blue-600 border-white/20' : ''">NENHUMA</button>
+                            <button (click)="updateSelectedElement({ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' })"
+                                class="flex-1 text-[10px] font-bold py-1 bg-slate-700 rounded border border-transparent shadow-sm transition-all"
+                                [ngClass]="selected.style.textShadow !== 'none' && selected.style.textShadow?.includes('4px') ? 'bg-blue-600 border-white/20' : ''">SUAVE</button>
+                            <button (click)="updateSelectedElement({ textShadow: '4px 4px 8px rgba(0,0,0,0.8)' })"
+                                class="flex-1 text-[10px] font-bold py-1 bg-slate-700 rounded border border-transparent shadow-sm transition-all"
+                                [ngClass]="selected.style.textShadow !== 'none' && selected.style.textShadow?.includes('8px') ? 'bg-blue-600 border-white/20' : ''">FORTE</button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-xs text-slate-400">Cor do Texto</label>
+                        <div class="flex flex-wrap gap-2">
+                            @for (c of COLORS; track c) {
+                            <button (click)="updateSelectedElement({ color: c })" class="w-6 h-6 rounded-full border"
+                                [ngClass]="selected.style.color === c ? 'border-white' : 'border-slate-600'"
+                                [style.backgroundColor]="c"></button>
+                            }
+                        </div>
+                    </div>
+
+                    } @else if (selected.type === 'image') {
+                    <div class="space-y-2">
+                        <label class="text-xs text-slate-400">Tamanho</label>
+                        <input type="range" min="10" max="3840" [ngModel]="selected.width || 100"
+                            (ngModelChange)="updateSelectedElement({ width: +$event, maintainRatio: true })"
+                            class="w-full accent-blue-500" />
+                    </div>
+                    <button (click)="fillScreen(selected.id)"
+                        class="w-full bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 text-[10px] font-bold py-2 rounded-lg border border-emerald-500/30 transition-all uppercase tracking-wider mb-2">
+                        Preencher Tela (Background)
+                    </button>
+                    <div class="space-y-2">
+                        <label class="text-xs text-slate-400">Sombras</label>
+                        <div class="flex gap-2">
+                            <button (click)="updateSelectedElement({ boxShadow: 'none' })"
+                                class="flex-1 text-[10px] font-bold py-1 bg-slate-700 rounded border border-transparent shadow-sm transition-all"
+                                [ngClass]="selected.style.boxShadow === 'none' ? 'bg-blue-600 border-white/20' : ''">NENHUMA</button>
+                            <button (click)="updateSelectedElement({ boxShadow: '0 4px 8px rgba(0,0,0,0.5)' })"
+                                class="flex-1 text-[10px] font-bold py-1 bg-slate-700 rounded border border-transparent shadow-sm transition-all"
+                                [ngClass]="selected.style.boxShadow !== 'none' && selected.style.boxShadow?.includes('8px') ? 'bg-blue-600 border-white/20' : ''">SUAVE</button>
+                            <button (click)="updateSelectedElement({ boxShadow: '0 10px 20px rgba(0,0,0,0.6)' })"
+                                class="flex-1 text-[10px] font-bold py-1 bg-slate-700 rounded border border-transparent shadow-sm transition-all"
+                                [ngClass]="selected.style.boxShadow !== 'none' && selected.style.boxShadow?.includes('20px') ? 'bg-blue-600 border-white/20' : ''">PROPRIA</button>
+                        </div>
+                    </div>
+                    }
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="text-xs text-slate-400">Opacidade</label>
+                            <span class="text-[10px] text-blue-400 font-bold">{{ (selected.style.opacity || 1) * 100 |
+                                number:'1.0-0' }}%</span>
+                        </div>
+                        <input type="range" min="0" max="1" step="0.05" [ngModel]="selected.style.opacity ?? 1"
+                            (ngModelChange)="updateSelectedElement({ opacity: $event })"
+                            class="w-full accent-blue-500" />
+                    </div>
+
+                    <button (click)="bringToFront(selected.id)"
+                        class="w-full flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors">
+                        <lucide-angular [img]="Layers" [size]="14"></lucide-angular> Trazer para frente
+                    </button>
+                </div>
+                } @else {
+                <div
+                    class="flex-1 flex flex-col items-center justify-center text-slate-500 opacity-50 px-4 text-center">
+                    <lucide-angular [img]="Palette" [size]="48" class="mb-2"></lucide-angular>
+                    <p class="text-sm">Selecione um elemento para editar</p>
                 </div>
                 }
 
-                <button (click)="bringToFront(selected.id)"
-                    class="w-full flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors">
-                    <lucide-angular [img]="Layers" [size]="14"></lucide-angular> Trazer para frente
-                </button>
+                <div class="h-px bg-slate-700 my-4 shrink-0"></div>
 
+                <!-- Layers List - Always Visible -->
+                <div class="space-y-3 flex-1 overflow-hidden flex flex-col min-h-[150px]">
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+                        <lucide-angular [img]="Layers" [size]="14"></lucide-angular> Camadas ({{ elements().length }})
+                    </h3>
+                    @if (elements().length === 0) {
+                    <div class="flex-1 flex flex-col items-center justify-center text-slate-500 opacity-50">
+                        <lucide-angular [img]="Move" [size]="32" class="mb-2"></lucide-angular>
+                        <p class="text-[10px] text-center uppercase tracking-tighter font-bold">Vazio</p>
+                    </div>
+                    } @else {
+                    <div class="flex-1 overflow-y-auto pr-2 space-y-2 custom-scrollbar">
+                        @for (el of elements().slice().reverse(); track el.id) {
+                        <div (click)="selectedId.set(el.id)"
+                            class="group p-2 bg-slate-900/50 border border-slate-700 rounded-xl cursor-pointer transition-all hover:bg-slate-700/50 flex items-center gap-3 shrink-0"
+                            [ngClass]="selectedId() === el.id ? 'border-blue-500 bg-blue-500/10' : ''">
+                            <div
+                                class="w-7 h-7 rounded bg-slate-800 flex items-center justify-center text-blue-400 shrink-0">
+                                <lucide-angular [img]="el.type === 'text' ? Type : ImageIcon"
+                                    [size]="14"></lucide-angular>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter truncate">
+                                    {{ el.type === 'text' ? el.content : 'Imagem ' + ($index + 1) }}
+                                </p>
+                            </div>
+                            <button (click)="deleteElement(el.id); $event.stopPropagation()"
+                                class="opacity-0 group-hover:opacity-100 p-1 text-red-400 hover:bg-red-400/10 rounded-md transition-all shrink-0">
+                                <lucide-angular [img]="Trash2" [size]="12"></lucide-angular>
+                            </button>
+                        </div>
+                        }
+                    </div>
+                    }
+                </div>
             </div>
-            } @else {
-            <div class="flex-1 flex flex-col items-center justify-center text-slate-500 opacity-50">
-                <lucide-angular [img]="Move" [size]="48" class="mb-2"></lucide-angular>
-                <p class="text-sm text-center">Selecione um elemento para editar</p>
-            </div>
-            }
 
             <!-- Actions -->
             <div class="mt-auto pt-4 border-t border-slate-700">
@@ -181,11 +264,14 @@
                     [ngClass]="selectedId() === el.id ? 'outline outline-2 outline-blue-500' : ''"
                     [style.left.%]="(el.x / 1920) * 100" [style.top.%]="(el.y / 1080) * 100"
                     [style.color]="el.style.color" [style.font-family]="el.style.fontFamily"
-                    [style.font-size]="'clamp(12px, ' + (el.style.fontSize! / 19.2) + 'vw, ' + el.style.fontSize + 'px)'"
+                    [style.font-size]="el.type === 'text' ? 'clamp(12px, ' + (el.style.fontSize! / 19.2) + 'vw, ' + el.style.fontSize + 'px)' : null"
                     [style.font-weight]="el.style.fontWeight" [style.font-style]="el.style.fontStyle"
                     [style.text-align]="el.style.textAlign" [style.z-index]="el.style.zIndex"
-                    [style.width.%]="el.width ? (el.width / 1920) * 100 : null" [style.width]="el.width ? null : 'auto'"
-                    style="padding: 4px;">
+                    [style.opacity]="el.style.opacity ?? 1"
+                    [style.text-shadow]="el.type === 'text' ? (el.style.textShadow || 'none') : null"
+                    [style.box-shadow]="el.type === 'image' ? (el.style.boxShadow || 'none') : null"
+                    [style.width]="el.width ? ((el.width / 1920) * 100) + '%' : 'auto'"
+                    [style.height]="el.height ? ((el.height / 1080) * 100) + '%' : 'auto'" style="padding: 4px;">
                     @if (el.type === 'text') {
                     <p class="whitespace-pre-wrap leading-tight" style="pointer-events: none;">
                         {{ el.content }}

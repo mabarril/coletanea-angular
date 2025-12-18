@@ -1,59 +1,50 @@
-# ColetaniaAngular
+# co.letânea
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.8.
+A caixa de ferramentas oficial para dinâmicas, sorteios e utilitários de produtividade. Desenvolvido com Angular 20 para máxima performance e elegância.
 
-## Development server
+## 🚀 Versão 1.0.0 (Estável)
 
-To start a local development server, run:
+Esta versão marca o lançamento oficial do portal unificado, contendo ferramentas essenciais para apresentadores, facilitadores e equipes.
+
+### 🛠️ Recursos Incluídos
+
+*   **Gerador de Telão**: Crie slides e imagens em alta resolução (4K) para apresentações. Inclui controle de camadas, opacidade, sombras e ajuste automático de fundo.
+*   **Roleta**: Seleção aleatória visual para brindes ou participantes.
+*   **Sorteio**: Realize sorteios rápidos a partir de listas importadas.
+*   **Quiz Show**: Game de perguntas dinâmico para engajamento de público.
+*   **Cronômetro**: Timer de contagem regressiva com alertas visuais.
+*   **Times**: Agrupador aleatório de pessoas em equipes.
+*   **QR Code**: Gerador instantâneo de códigos para links e textos.
+
+## 🛠️ Tecnologias
+
+*   **Angular 20**: Framework moderno e reativo.
+*   **Tailwind CSS**: Estilização premium e responsiva.
+*   **Lucide Icons**: Conjunto de ícones elegantes.
+*   **Html2Canvas**: Exportação de imagens de alta qualidade.
+
+## 🚦 Começando
+
+### Servidor de Desenvolvimento
+
+Para iniciar o servidor local, execute:
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Navegue até `http://localhost:4200/`. A aplicação recarregará automaticamente ao modificar os arquivos.
 
-## Code scaffolding
+### Construção (Build)
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+Para gerar os artefatos de produção:
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Os arquivos serão armazenados no diretório `dist/`.
 
-## Running unit tests
+---
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+© 2025 co.labbs

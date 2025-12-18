@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { LucideAngularModule, LayoutGrid, List, Sparkles, Trophy, ArrowRight, QrCode, Timer, Scissors, Users, Monitor, Gamepad2 } from 'lucide-angular';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { LucideAngularModule, LayoutGrid, List, Sparkles, Trophy, ArrowRight, QrCode, Timer, Scissors, Users, Monitor, Gamepad2, X } from 'lucide-angular';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-landing-page',
   standalone: true,
-  imports: [RouterLink, LucideAngularModule, CommonModule, NgOptimizedImage],
+  imports: [RouterLink, LucideAngularModule, CommonModule],
   templateUrl: './landing-page.html',
   styleUrl: './landing-page.css',
 })
@@ -22,6 +22,13 @@ export class LandingPage {
   readonly Users = Users;
   readonly Monitor = Monitor;
   readonly Gamepad2 = Gamepad2;
+  readonly X = X;
+
+  showCtaPopup = signal(true);
 
   protected readonly year = new Date().getFullYear();
+
+  closeCta() {
+    this.showCtaPopup.set(false);
+  }
 }

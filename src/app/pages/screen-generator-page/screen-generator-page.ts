@@ -26,6 +26,9 @@ interface ScreenElement {
     textAlign?: 'left' | 'center' | 'right';
     backgroundColor?: string;
     borderRadius?: number;
+    opacity?: number;
+    textShadow?: string;
+    boxShadow?: string;
     zIndex: number;
   };
 }
@@ -49,6 +52,9 @@ const COLORS = [
   imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './screen-generator-page.html',
   styleUrl: './screen-generator-page.css',
+  host: {
+    '(window:keydown)': 'handleKeyDown($event)'
+  }
 })
 export class ScreenGeneratorPage {
   // ViewChild
@@ -101,6 +107,8 @@ export class ScreenGeneratorPage {
         fontFamily: 'Inter, sans-serif',
         fontWeight: 'normal',
         textAlign: 'left',
+        opacity: 1,
+        textShadow: 'none',
         zIndex: this.elements().length + 1
       }
     };
@@ -128,9 +136,11 @@ export class ScreenGeneratorPage {
               content: ev.target!.result as string,
               x: 100,
               y: 100,
-              width: img.width * ratio,
-              height: img.height * ratio,
+              width: Math.round(img.width * ratio),
+              height: Math.round(img.height * ratio),
               style: {
+                opacity: 1,
+                boxShadow: 'none',
                 zIndex: this.elements().length + 1
               }
             };
@@ -160,10 +170,15 @@ export class ScreenGeneratorPage {
         }
 
         Object.entries(updates).forEach(([key, value]) => {
-          if (['color', 'fontSize', 'fontFamily', 'fontWeight', 'fontStyle', 'textAlign', 'backgroundColor', 'borderRadius', 'zIndex'].includes(key)) {
+          if (['color', 'fontSize', 'fontFamily', 'fontWeight', 'fontStyle', 'textAlign', 'backgroundColor', 'borderRadius', 'opacity', 'textShadow', 'boxShadow', 'zIndex'].includes(key)) {
             styleUpdates[key] = value;
           } else {
-            rootUpdates[key] = value;
+            // Coerce width and height to numbers if they are strings from input range
+            if ((key === 'width' || key === 'height') && typeof value === 'string') {
+              rootUpdates[key] = parseFloat(value);
+            } else {
+              rootUpdates[key] = value;
+            }
           }
         });
 
@@ -192,6 +207,75 @@ export class ScreenGeneratorPage {
   bringToFront(id: string) {
     const maxZ = Math.max(...this.elements().map(e => e.style.zIndex || 0));
     this.updateElement(id, { zIndex: maxZ + 1 });
+  }
+
+  fillScreen(id: string) {
+    const el = this.elements().find(e => e.id === id);
+    if (el && el.type === 'image') {
+      // Calculate covers for 1920x1080
+      // We want to cover the whole 16:9 stage. 
+      // Simplified: Force width to 1920 and center Y, or force height to 1080 and center X.
+      // But for a simple "Background" vibe, let's just force 1920x1080 and reset X,Y to 0
+      // if they want it as a true background. Or keep ratio.
+
+      // Let's do "Cover" logic (simplified: force 1920 and calculate height, then center Y)
+      const stageW = 1920;
+      const stageH = 1080;
+      const img = new Image();
+      img.src = el.content;
+      img.onload = () => {
+        const ratio = img.width / img.height;
+        let newW, newH, newX, newY;
+
+        if (ratio > stageW / stageH) {
+          // Image is wider than stage
+          newH = stageH;
+          newW = stageH * ratio;
+          newX = (stageW - newW) / 2;
+          newY = 0;
+        } else {
+          // Image is taller than stage
+          newW = stageW;
+          newH = stageW / ratio;
+          newX = 0;
+          newY = (stageH - newH) / 2;
+        }
+
+        this.updateElement(id, {
+          x: newX,
+          y: newY,
+          width: Math.round(newW),
+          height: Math.round(newH)
+        });
+      };
+    }
+  }
+
+  // Keyboard Shortcuts
+  handleKeyDown(e: KeyboardEvent) {
+    // If typing in textarea or input, don't trigger shortcuts
+    if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) return;
+
+    const selectedId = this.selectedId();
+    if (!selectedId) return;
+
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+      this.deleteElement(selectedId);
+      e.preventDefault();
+    } else if (e.key.startsWith('Arrow')) {
+      const step = e.shiftKey ? 10 : 1;
+      const el = this.elements().find(el => el.id === selectedId);
+      if (el) {
+        let { x, y } = el;
+        if (e.key === 'ArrowLeft') x -= step;
+        else if (e.key === 'ArrowRight') x += step;
+        else if (e.key === 'ArrowUp') y -= step;
+        else if (e.key === 'ArrowDown') y += step;
+
+        this.updateElement(selectedId, { x, y });
+        e.preventDefault();
+      }
+    }
   }
 
   // Drag Logic

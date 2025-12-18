@@ -246,12 +246,36 @@
                 class="flex items-center text-blue-400 font-semibold mt-4 group-hover:translate-x-2 transition-transform text-sm">
                 Abrir <lucide-angular [img]="ArrowRight" class="ml-2 w-4 h-4"></lucide-angular>
             </div>
-        </button> -->
+        </button>
 
     </div>
-    <div>
-        <footer class="absolute bottom-6 text-slate-600 text-sm font-medium">
-            © {{ year }} co.labbs
-        </footer>
+
+    <!-- CTA Popup: Portal de Gamificação BB -->
+    @if (showCtaPopup()) {
+    <div
+        class="fixed bottom-6 right-6 z-50 w-80 bg-slate-800 border-2 border-yellow-500 rounded-2xl shadow-2xl p-5 animate-in slide-in-from-bottom-10 fade-in duration-700 group/cta">
+        <button (click)="closeCta()" class="absolute top-3 right-3 text-slate-500 hover:text-white transition-colors">
+            <lucide-angular [img]="X" [size]="16"></lucide-angular>
+        </button>
+
+        <div class="flex items-start gap-4 mb-4">
+            <div class="p-2 bg-yellow-500 rounded-xl text-blue-900 shadow-lg shadow-yellow-500/20">
+                <lucide-angular [img]="Trophy" [size]="24"></lucide-angular>
+            </div>
+            <div>
+                <h3 class="text-white font-bold text-sm">GamificaBB</h3>
+                <p class="text-xs text-slate-400 mt-1">Conheça o portal de Gamificação do BB.</p>
+            </div>
+        </div>
+
+        <a href="https://gamifica.apps.bb.com.br/" target="_blank"
+            class="block w-full bg-blue-600 hover:bg-blue-500 text-white text-center py-2.5 rounded-xl font-bold text-sm transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-blue-500/20">
+            Acessar Portal
+        </a>
     </div>
+    }
+
+    <footer class="w-full text-center mt-12 mb-6 text-slate-600 text-sm font-medium relative z-0">
+        © {{ year }} co.labbs
+    </footer>
 </div>
