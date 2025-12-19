@@ -27,7 +27,7 @@ export class LandingPage {
   showCtaPopup = signal(true);
 
   protected readonly year = new Date().getFullYear();
-  protected readonly version = '1.2.0';
+  protected readonly version = '1.3.0';
 
   closeCta() {
     this.showCtaPopup.set(false);
