@@ -1,5 +1,6 @@
-import { Component, signal, effect, computed, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, signal, effect, computed, Inject, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
+import { AnalyticsService } from '../../services/analytics.service';
 import { FormsModule } from '@angular/forms';
 import {
   LucideAngularModule,
@@ -57,6 +58,7 @@ export class QuizPage {
   editOptions = signal<QuizOption[]>(JSON.parse(JSON.stringify(DEFAULT_OPTIONS)));
 
   private audio: HTMLAudioElement | null = null;
+  private analytics = inject(AnalyticsService);
   private timerInterval: any;
 
   // Computed helpers
@@ -202,6 +204,9 @@ export class QuizPage {
     if (this.questions().length === 0) return;
     this.currentQuestionIndex.set(0);
     this.loadQuestion(0);
+    this.analytics.trackEvent('quiz_started', {
+      question_count: this.questions().length
+    });
   }
 
   loadQuestion(index: number) {
@@ -218,6 +223,9 @@ export class QuizPage {
     } else {
       this.setGameState('finished');
       confetti();
+      this.analytics.trackEvent('quiz_finished', {
+        question_count: this.questions().length
+      });
       if (this.audio) this.audio.play().catch(() => { });
     }
   }

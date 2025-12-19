@@ -1,9 +1,11 @@
-# co.letânea (v1.2.0)
+# co.letânea (v1.3.0)
 A **Coletânea** é uma caixa de ferramentas utilitárias desenvolvida em Angular, focada em produtividade para eventos, dinâmicas e apresentações. Construída com uma estética premium e foco em usabilidade.
 
 ## 🚀 Histórico de Versões
 
-### [v1.2.0] - Dezembro 2025
+### [v1.3.0] - Dezembro 2025
+*   **Gestão de Camadas**: Novos controles para bloquear (lock), ocultar (hide) e reordenar (stacking order) elementos no Gerador de Telão.
+*   **Google Analytics 4**: Integração completa com GA4 para rastreio de visualizações de página e eventos customizados (ex: exportação de imagem, sorteios).
 *   **Fundos Degradê**: Introdução de gradientes lineares com seleção de duas cores e controle de ângulo (0-360°) no Gerador de Telão.
 *   **Identificação de Versão**: Adição da etiqueta de versão automática no rodapé da Landing Page.
 

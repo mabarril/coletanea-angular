@@ -3,6 +3,7 @@ import { RouterOutlet, Router, NavigationEnd, RouterLink } from '@angular/router
 import { LucideAngularModule, ArrowLeft } from 'lucide-angular';
 import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
+import { AnalyticsService } from './services/analytics.service';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +14,7 @@ import { CommonModule } from '@angular/common';
 })
 export class App {
   private router = inject(Router);
+  private analytics = inject(AnalyticsService);
   notLanding = false;
   readonly ArrowLeft = ArrowLeft;
 
@@ -22,6 +24,7 @@ export class App {
     ).subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.notLanding = event.urlAfterRedirects !== '/';
+        this.analytics.trackPageView(event.urlAfterRedirects);
       }
     });
   }

@@ -1,5 +1,6 @@
-import { Component, signal, ElementRef, ViewChild, Inject, PLATFORM_ID, computed } from '@angular/core';
+import { Component, signal, ElementRef, ViewChild, Inject, PLATFORM_ID, computed, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { AnalyticsService } from '../../services/analytics.service';
 import { FormsModule } from '@angular/forms';
 import {
   LucideAngularModule, Monitor, Image as ImageIcon, Type, Move, Trash2, Download,
@@ -123,6 +124,8 @@ export class ScreenGeneratorPage {
 
   // Helper computed
   selectedElement = computed(() => this.elements().find(e => e.id === this.selectedId()));
+
+  private analytics = inject(AnalyticsService);
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     if (isPlatformBrowser(this.platformId)) {
@@ -426,6 +429,10 @@ export class ScreenGeneratorPage {
   // Export Logic
   handleExport() {
     if (!this.stageRef?.nativeElement || !isPlatformBrowser(this.platformId)) return;
+    this.analytics.trackEvent('export_image', {
+      element_count: this.elements().length,
+      is_gradient: this.isGradient()
+    });
     this.isExporting.set(true);
     const currentSelection = this.selectedId();
     this.selectedId.set(null); // Deselect to remove borders

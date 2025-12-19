@@ -1,5 +1,6 @@
-import { Component, computed, signal, effect } from '@angular/core';
+import { Component, computed, signal, effect, inject } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { AnalyticsService } from '../../services/analytics.service';
 import { LucideAngularModule, Sparkles } from 'lucide-angular';
 import confetti from 'canvas-confetti';
 
@@ -39,6 +40,7 @@ export class WheelPage {
   spinDuration = SPIN_DURATION_SECONDS;
 
   private audio: HTMLAudioElement | null = null;
+  private analytics = inject(AnalyticsService);
 
   constructor() {
     this.initAudio();
@@ -105,6 +107,10 @@ export class WheelPage {
     this.isSpinning.set(true);
     this.winner.set(null);
 
+    this.analytics.trackEvent('spin_wheel', {
+      item_count: active.length
+    });
+
     // 1. Determine Winner
     const winnerIndex = Math.floor(Math.random() * active.length);
     const winnerItem = active[winnerIndex];
@@ -149,6 +155,10 @@ export class WheelPage {
       this.winner.set(winnerItem);
       this.playSound();
       this.triggerConfetti();
+
+      this.analytics.trackEvent('wheel_winner', {
+        label: winnerItem.label
+      });
 
       // Decrement quantity
       this.updateQuantity({ id: winnerItem.id, delta: -1 });
