@@ -1,19 +1,23 @@
 # co.letânea (v1.2.0)
 A **Coletânea** é uma caixa de ferramentas utilitárias desenvolvida em Angular, focada em produtividade para eventos, dinâmicas e apresentações. Construída com uma estética premium e foco em usabilidade.
 
-## 🚀 Versão 1.0.0 (Estável)
+## 🚀 Histórico de Versões
 
-Esta versão marca o lançamento oficial do portal unificado, contendo ferramentas essenciais para apresentadores, facilitadores e equipes.
+### [v1.2.0] - Dezembro 2025
+*   **Fundos Degradê**: Introdução de gradientes lineares com seleção de duas cores e controle de ângulo (0-360°) no Gerador de Telão.
+*   **Identificação de Versão**: Adição da etiqueta de versão automática no rodapé da Landing Page.
 
-### 🛠️ Recursos Incluídos
+### [v1.1.0] - Dezembro 2025
+*   **Cores de Sombra**: Personalização total da cor das sombras em elementos de texto e imagem.
+*   **Fontes do Sistema**: Integração com a *Local Font Access API* para carregar fontes instaladas no computador do usuário.
+*   **Fallback de Fontes**: Campo de entrada manual para aplicar fontes pelo nome (ex: Arial, Tahoma) caso a API não seja suportada.
 
-*   **Gerador de Telão**: Crie slides e imagens em alta resolução (4K) para apresentações. Inclui controle de camadas, opacidade, sombras e ajuste automático de fundo.
-*   **Roleta**: Seleção aleatória visual para brindes ou participantes.
-*   **Sorteio**: Realize sorteios rápidos a partir de listas importadas.
-*   **Quiz Show**: Game de perguntas dinâmico para engajamento de público.
-*   **Cronômetro**: Timer de contagem regressiva com alertas visuais.
-*   **Times**: Agrupador aleatório de pessoas em equipes.
-*   **QR Code**: Gerador instantâneo de códigos para links e textos.
+### [v1.0.0] - Estável
+Versão inicial com as ferramentas essenciais para facilitadores e equipes:
+*   **Gerador de Telão**: Criação de slides 4K com controle de camadas, opacidade e exportação.
+*   **Roleta & Sorteio**: Ferramentas para sorteios e seleções aleatórias visuais.
+*   **Quiz Show & Cronômetro**: Dinâmicas de engajamento e controle de tempo.
+*   **Times & QR Code**: Agrupador de pessoas e gerador de links/textos instantâneos.
 
 ## 🛠️ Tecnologias
 

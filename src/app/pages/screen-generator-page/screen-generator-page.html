@@ -278,24 +278,61 @@
                     </div>
                     } @else {
                     <div class="flex-1 overflow-y-auto pr-2 space-y-2 custom-scrollbar">
-                        @for (el of elements().slice().reverse(); track el.id) {
+                        @for (el of elements().slice().reverse(); track el.id; let idx = $index) {
+                        @let realIdx = elements().length - 1 - idx;
                         <div (click)="selectedId.set(el.id)"
-                            class="group p-2 bg-slate-900/50 border border-slate-700 rounded-xl cursor-pointer transition-all hover:bg-slate-700/50 flex items-center gap-3 shrink-0"
-                            [ngClass]="selectedId() === el.id ? 'border-blue-500 bg-blue-500/10' : ''">
-                            <div
-                                class="w-7 h-7 rounded bg-slate-800 flex items-center justify-center text-blue-400 shrink-0">
-                                <lucide-angular [img]="el.type === 'text' ? Type : ImageIcon"
-                                    [size]="14"></lucide-angular>
+                            class="group p-2 bg-slate-900/50 border border-slate-700 rounded-xl cursor-pointer transition-all hover:bg-slate-700/50 flex items-center gap-2 shrink-0"
+                            [ngClass]="{
+                                'border-blue-500 bg-blue-500/10': selectedId() === el.id,
+                                'opacity-50': el.hidden
+                            }">
+                            
+                            <!-- Reorder buttons -->
+                            <div class="flex flex-col gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button (click)="moveLayerUp(el.id); $event.stopPropagation()" 
+                                    [disabled]="realIdx === elements().length - 1"
+                                    class="p-0.5 hover:bg-slate-600 rounded disabled:opacity-20">
+                                    <lucide-angular [img]="ChevronUp" [size]="10"></lucide-angular>
+                                </button>
+                                <button (click)="moveLayerDown(el.id); $event.stopPropagation()" 
+                                    [disabled]="realIdx === 0"
+                                    class="p-0.5 hover:bg-slate-600 rounded disabled:opacity-20">
+                                    <lucide-angular [img]="ChevronDown" [size]="10"></lucide-angular>
+                                </button>
                             </div>
+
+                            <div class="w-7 h-7 rounded bg-slate-800 flex items-center justify-center text-blue-400 shrink-0 relative">
+                                <lucide-angular [img]="el.type === 'text' ? Type : ImageIcon" [size]="14"></lucide-angular>
+                                @if (el.locked) {
+                                    <div class="absolute -top-1 -right-1 bg-amber-500 text-white rounded-full p-0.5 scale-75 border border-slate-900">
+                                        <lucide-angular [img]="Lock" [size]="8"></lucide-angular>
+                                    </div>
+                                }
+                            </div>
+
                             <div class="flex-1 min-w-0">
-                                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter truncate">
-                                    {{ el.type === 'text' ? el.content : 'Imagem ' + ($index + 1) }}
+                                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter truncate"
+                                   [ngClass]="selectedId() === el.id ? 'text-blue-400' : 'text-slate-500'">
+                                    {{ el.type === 'text' ? el.content : (el.content.startsWith('data') ? 'Imagem custom' : el.content.split('/').pop()) }}
                                 </p>
                             </div>
-                            <button (click)="deleteElement(el.id); $event.stopPropagation()"
-                                class="opacity-0 group-hover:opacity-100 p-1 text-red-400 hover:bg-red-400/10 rounded-md transition-all shrink-0">
-                                <lucide-angular [img]="Trash2" [size]="12"></lucide-angular>
-                            </button>
+
+                            <div class="flex items-center gap-1">
+                                <button (click)="toggleVisibility(el.id); $event.stopPropagation()"
+                                    class="p-1.5 hover:bg-slate-700 rounded-md transition-all shrink-0"
+                                    [ngClass]="el.hidden ? 'text-slate-500' : 'text-blue-400 opacity-0 group-hover:opacity-100'">
+                                    <lucide-angular [img]="el.hidden ? EyeOff : Eye" [size]="12"></lucide-angular>
+                                </button>
+                                <button (click)="toggleLock(el.id); $event.stopPropagation()"
+                                    class="p-1.5 hover:bg-slate-700 rounded-md transition-all shrink-0"
+                                    [ngClass]="el.locked ? 'text-amber-500' : 'text-slate-400 opacity-0 group-hover:opacity-100'">
+                                    <lucide-angular [img]="el.locked ? Lock : Unlock" [size]="12"></lucide-angular>
+                                </button>
+                                <button (click)="deleteElement(el.id); $event.stopPropagation()"
+                                    class="opacity-0 group-hover:opacity-100 p-1.5 text-red-500 hover:bg-red-500/10 rounded-md transition-all shrink-0">
+                                    <lucide-angular [img]="Trash2" [size]="12"></lucide-angular>
+                                </button>
+                            </div>
                         </div>
                         }
                     </div>
@@ -330,6 +367,7 @@
                 </div>
 
                 @for (el of elements(); track el.id) {
+                @if (!el.hidden) {
                 <div (mousedown)="handleMouseDown($event, el.id)"
                     class="absolute cursor-move hover:outline hover:outline-1 hover:outline-blue-400/50"
                     [ngClass]="selectedId() === el.id ? 'outline outline-2 outline-blue-500' : ''"
@@ -352,6 +390,7 @@
                         draggable="false" />
                     }
                 </div>
+                }
                 }
             </div>
 

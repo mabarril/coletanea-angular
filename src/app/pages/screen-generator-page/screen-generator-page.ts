@@ -3,7 +3,8 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
   LucideAngularModule, Monitor, Image as ImageIcon, Type, Move, Trash2, Download,
-  Palette, Bold, Italic, AlignLeft, AlignCenter, AlignRight, Layers
+  Palette, Bold, Italic, AlignLeft, AlignCenter, AlignRight, Layers,
+  Lock, Unlock, Eye, EyeOff, ChevronUp, ChevronDown
 } from 'lucide-angular';
 import html2canvas from 'html2canvas';
 
@@ -17,6 +18,8 @@ interface ScreenElement {
   y: number;
   width?: number; // For images
   height?: number; // For images
+  locked?: boolean;
+  hidden?: boolean;
   style: {
     color?: string;
     fontSize?: number;
@@ -83,6 +86,12 @@ export class ScreenGeneratorPage {
   readonly AlignCenter = AlignCenter;
   readonly AlignRight = AlignRight;
   readonly Layers = Layers;
+  readonly Lock = Lock;
+  readonly Unlock = Unlock;
+  readonly Eye = Eye;
+  readonly EyeOff = EyeOff;
+  readonly ChevronUp = ChevronUp;
+  readonly ChevronDown = ChevronDown;
 
   // State
   elements = signal<ScreenElement[]>([]);
@@ -153,6 +162,41 @@ export class ScreenGeneratorPage {
 
   toggleGradient() {
     this.isGradient.update(v => !v);
+  }
+
+  toggleLock(id: string) {
+    this.elements.update(prev => prev.map(el =>
+      el.id === id ? { ...el, locked: !el.locked } : el
+    ));
+    if (this.selectedId() === id && this.elements().find(e => e.id === id)?.locked) {
+      // Keep selected for now but logic below will block interaction
+    }
+  }
+
+  toggleVisibility(id: string) {
+    this.elements.update(prev => prev.map(el =>
+      el.id === id ? { ...el, hidden: !el.hidden } : el
+    ));
+  }
+
+  moveLayerUp(id: string) {
+    this.elements.update(prev => {
+      const index = prev.findIndex(el => el.id === id);
+      if (index >= prev.length - 1) return prev;
+      const newElements = [...prev];
+      [newElements[index], newElements[index + 1]] = [newElements[index + 1], newElements[index]];
+      return newElements;
+    });
+  }
+
+  moveLayerDown(id: string) {
+    this.elements.update(prev => {
+      const index = prev.findIndex(el => el.id === id);
+      if (index <= 0) return prev;
+      const newElements = [...prev];
+      [newElements[index], newElements[index - 1]] = [newElements[index - 1], newElements[index]];
+      return newElements;
+    });
   }
 
   addText() {
@@ -319,23 +363,23 @@ export class ScreenGeneratorPage {
     // If typing in textarea or input, don't trigger shortcuts
     if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) return;
 
-    const selectedId = this.selectedId();
-    if (!selectedId) return;
+    const selected = this.selectedElement();
+    if (!selected || selected.locked) return;
 
     if (e.key === 'Delete' || e.key === 'Backspace') {
-      this.deleteElement(selectedId);
+      this.deleteElement(selected.id);
       e.preventDefault();
     } else if (e.key.startsWith('Arrow')) {
       const step = e.shiftKey ? 10 : 1;
-      const el = this.elements().find(el => el.id === selectedId);
-      if (el) {
-        let { x, y } = el;
+      // const el = this.elements().find(el => el.id === selectedId); // 'selected' is already the element
+      if (selected) {
+        let { x, y } = selected;
         if (e.key === 'ArrowLeft') x -= step;
         else if (e.key === 'ArrowRight') x += step;
         else if (e.key === 'ArrowUp') y -= step;
         else if (e.key === 'ArrowDown') y += step;
 
-        this.updateElement(selectedId, { x, y });
+        this.updateElement(selected.id, { x, y });
         e.preventDefault();
       }
     }
@@ -343,11 +387,13 @@ export class ScreenGeneratorPage {
 
   // Drag Logic
   handleMouseDown(e: MouseEvent, id: string) {
-    e.stopPropagation();
+    const el = this.elements().find(e => e.id === id);
+    if (el?.locked || el?.hidden) return;
+
     this.selectedId.set(id);
     this.isDragging.set(true);
 
-    const el = this.elements().find(el => el.id === id);
+    // const el = this.elements().find(el => el.id === id); // Already defined above
     if (el && this.stageRef?.nativeElement) {
       const rect = this.stageRef.nativeElement.getBoundingClientRect();
       const scaleX = 1920 / rect.width;
