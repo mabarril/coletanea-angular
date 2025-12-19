@@ -36,16 +36,53 @@
                 </div>
             </div>
 
-            <div class="space-y-3">
-                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Fundo</h3>
-                <div class="flex gap-2 flex-wrap">
-                    @for (c of COLORS; track c) {
-                    <button (click)="backgroundColor.set(c)" class="w-8 h-8 rounded-full border-2"
-                        [ngClass]="backgroundColor() === c ? 'border-white scale-110' : 'border-transparent hover:border-slate-500'"
-                        [style.backgroundColor]="c"></button>
+            <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Fundo</h3>
+                    <button (click)="toggleGradient()" class="text-[10px] px-2 py-1 rounded border transition-colors"
+                        [ngClass]="isGradient() ? 'bg-blue-600 border-blue-400 text-white' : 'bg-slate-700 border-slate-600 text-slate-400'">
+                        {{ isGradient() ? 'DEGRADÊ' : 'SÓLIDO' }}
+                    </button>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="flex gap-2 flex-wrap">
+                        @for (c of COLORS; track c) {
+                        <button (click)="backgroundColor.set(c)" class="w-8 h-8 rounded-full border-2"
+                            [ngClass]="backgroundColor() === c ? 'border-white scale-110' : 'border-transparent hover:border-slate-500'"
+                            [style.backgroundColor]="c"></button>
+                        }
+                        <input type="color" [ngModel]="backgroundColor()" (ngModelChange)="backgroundColor.set($event)"
+                            class="w-8 h-8 p-0 bg-transparent border-0 rounded-full overflow-hidden cursor-pointer" />
+                    </div>
+
+                    @if (isGradient()) {
+                    <div class="animate-in slide-in-from-top-2 duration-300 space-y-3">
+                        <div class="flex items-center gap-2">
+                            <div class="h-px bg-slate-700 flex-1"></div>
+                            <span class="text-[10px] text-slate-500 font-bold uppercase tracking-tighter">Cor 2</span>
+                            <div class="h-px bg-slate-700 flex-1"></div>
+                        </div>
+                        <div class="flex gap-2 flex-wrap">
+                            @for (c of COLORS; track c) {
+                            <button (click)="backgroundColor2.set(c)" class="w-8 h-8 rounded-full border-2"
+                                [ngClass]="backgroundColor2() === c ? 'border-white scale-110' : 'border-transparent hover:border-slate-500'"
+                                [style.backgroundColor]="c"></button>
+                            }
+                            <input type="color" [ngModel]="backgroundColor2()"
+                                (ngModelChange)="backgroundColor2.set($event)"
+                                class="w-8 h-8 p-0 bg-transparent border-0 rounded-full overflow-hidden cursor-pointer" />
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center">
+                                <label class="text-[10px] text-slate-400 uppercase">Ângulo</label>
+                                <span class="text-[10px] text-blue-400 font-bold">{{ gradientAngle() }}°</span>
+                            </div>
+                            <input type="range" min="0" max="360" [ngModel]="gradientAngle()"
+                                (ngModelChange)="gradientAngle.set($event)" class="w-full accent-blue-500" />
+                        </div>
+                    </div>
                     }
-                    <input type="color" [ngModel]="backgroundColor()" (ngModelChange)="backgroundColor.set($event)"
-                        class="w-8 h-8 p-0 bg-transparent border-0 rounded-full overflow-hidden cursor-pointer" />
                 </div>
             </div>
 
@@ -286,7 +323,7 @@
             class="flex-1 w-full bg-slate-950 rounded-2xl p-4 lg:p-8 flex items-center justify-center overflow-hidden border border-slate-800 shadow-inner order-1 lg:order-2">
 
             <div class="relative w-full max-w-full aspect-video shadow-2xl overflow-hidden select-none group" #stageRef
-                [style.backgroundColor]="backgroundColor()">
+                [style.background]="stageBackground()">
                 <!-- Grid Overlay -->
                 <div class="absolute inset-0 pointer-events-none opacity-5"
                     style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 40px 40px;">

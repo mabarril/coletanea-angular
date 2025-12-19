@@ -275,7 +275,9 @@
     </div>
     }
 
-    <footer class="w-full text-center mt-12 mb-6 text-slate-600 text-sm font-medium relative z-0">
-        © {{ year }} co.labbs
+    <footer
+        class="w-full text-center mt-12 mb-6 text-slate-600 text-sm font-medium relative z-0 flex flex-col items-center gap-1">
+        <span>© {{ year }} co.labbs</span>
+        <span class="text-[10px] opacity-50 uppercase tracking-widest">v{{ version }}</span>
     </footer>
 </div>

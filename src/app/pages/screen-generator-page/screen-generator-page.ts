@@ -88,6 +88,9 @@ export class ScreenGeneratorPage {
   elements = signal<ScreenElement[]>([]);
   selectedId = signal<string | null>(null);
   backgroundColor = signal('#1e293b');
+  backgroundColor2 = signal('#334155');
+  gradientAngle = signal(135);
+  isGradient = signal(false);
   isDragging = signal(false);
   isExporting = signal(false);
   localFonts = signal<{ name: string, value: string }[]>([]);
@@ -98,6 +101,13 @@ export class ScreenGeneratorPage {
     ...this.localFonts(),
     { name: '--- Personalizada ---', value: 'custom' }
   ]);
+
+  stageBackground = computed(() => {
+    if (this.isGradient()) {
+      return `linear-gradient(${this.gradientAngle()}deg, ${this.backgroundColor()}, ${this.backgroundColor2()})`;
+    }
+    return this.backgroundColor();
+  });
 
   // Private state for drag logic
   private dragOffset = { x: 0, y: 0 };
@@ -139,6 +149,10 @@ export class ScreenGeneratorPage {
     } else {
       alert("Seu navegador não suporta acesso direto a fontes locais. Você pode digitar o nome da fonte manualmente.");
     }
+  }
+
+  toggleGradient() {
+    this.isGradient.update(v => !v);
   }
 
   addText() {

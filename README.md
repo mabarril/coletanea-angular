@@ -1,6 +1,5 @@
-# co.letânea
-
-A caixa de ferramentas oficial para dinâmicas, sorteios e utilitários de produtividade. Desenvolvido com Angular 20 para máxima performance e elegância.
+# co.letânea (v1.1.0)
+A **Coletânea** é uma caixa de ferramentas utilitárias desenvolvida em Angular, focada em produtividade para eventos, dinâmicas e apresentações. Construída com uma estética premium e foco em usabilidade.
 
 ## 🚀 Versão 1.0.0 (Estável)
 
