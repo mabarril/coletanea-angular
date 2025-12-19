@@ -1,4 +1,4 @@
-# co.letânea (v1.1.0)
+# co.letânea (v1.2.0)
 A **Coletânea** é uma caixa de ferramentas utilitárias desenvolvida em Angular, focada em produtividade para eventos, dinâmicas e apresentações. Construída com uma estética premium e foco em usabilidade.
 
 ## 🚀 Versão 1.0.0 (Estável)
