@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { LucideAngularModule, LayoutGrid, List, Sparkles, Trophy, ArrowRight, QrCode, Timer, Scissors, Users, Monitor, Gamepad2, X } from 'lucide-angular';
+import { LucideAngularModule, LayoutGrid, List, Sparkles, Trophy, ArrowRight, QrCode, Timer, Scissors, Users, Monitor, Gamepad2, X, Calendar } from 'lucide-angular';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -23,6 +23,7 @@ export class LandingPage {
   readonly Monitor = Monitor;
   readonly Gamepad2 = Gamepad2;
   readonly X = X;
+  readonly Calendar = Calendar;
 
   showCtaPopup = signal(true);
 

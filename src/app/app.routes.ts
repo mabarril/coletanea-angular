@@ -8,6 +8,7 @@ import { ShortenerPage } from './pages/shortener-page/shortener-page';
 import { TeamGeneratorPage } from './pages/team-generator-page/team-generator-page';
 import { ScreenGeneratorPage } from './pages/screen-generator-page/screen-generator-page';
 import { QuizPage } from './pages/quiz-page/quiz-page';
+import { ColendarioPageComponent } from './pages/colendario-page/colendario-page';
 
 export const routes: Routes = [
     { path: '', component: LandingPage },
@@ -19,5 +20,6 @@ export const routes: Routes = [
     { path: 'teams', component: TeamGeneratorPage },
     { path: 'screen', component: ScreenGeneratorPage },
     { path: 'quiz', component: QuizPage },
+    { path: 'colendario', component: ColendarioPageComponent },
     { path: '**', redirectTo: '' }
 ];
