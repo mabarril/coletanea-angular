@@ -10,10 +10,13 @@ describe('WheelControls', () => {
     await TestBed.configureTestingModule({
       imports: [WheelControls]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(WheelControls);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('items', []);
+    fixture.componentRef.setInput('isSpinning', false);
+    fixture.componentRef.setInput('activeCount', 0);
     fixture.detectChanges();
   });
 
