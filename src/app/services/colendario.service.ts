@@ -1,4 +1,7 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { TsvParserService } from './tsv-parser.service';
+import { FileUploadService } from './file-upload.service';
 
 export interface Evento {
     numeroEvento?: number;
@@ -20,11 +23,18 @@ export interface Evento {
     providedIn: 'root'
 })
 export class ColendarioService {
+    private http = inject(HttpClient);
+    private tsvParser = inject(TsvParserService);
+    private fileUploadService = inject(FileUploadService);
+
     private eventosSignal = signal<Evento[]>([]);
     readonly eventos = this.eventosSignal.asReadonly();
 
     readonly proximosEventos = computed(() => {
+        const agora = new Date(); // Current date and time
+
         return this.eventosSignal()
+            .filter(evento => evento.dataFimEvento >= agora) // Only events that haven't ended yet
             .sort((a, b) => a.dataInicioEvento.getTime() - b.dataInicioEvento.getTime())
             .slice(0, 10);
     });
@@ -38,52 +48,32 @@ export class ColendarioService {
     }
 
     private carregarDadosIniciais(): void {
-        const hoje = new Date();
-        const mockEventos: Evento[] = [];
+        // Check if there's uploaded content in localStorage first
+        const uploadedContent = this.fileUploadService.getTsvContent();
 
-        const nomes = [
-            'Sessão ao Vivo: Performance em Angular', // Testing live event
-            'Workshop Angular Avançado',
-            'Sessão de Mentoria co.labbs',
-            'Sprint Review: Projeto Phoenix',
-            'Intro to Cloud Architecture',
-            'UI/UX Design Trends 2026',
-            'DevOps Best Practices',
-            'Mobile Dev with Flutter',
-            'Data Science Essentials',
-            'Cybersecurity Awareness',
-            'Internal Hackathon',
-            'Product Management Sync'
-        ];
-
-        for (let i = 0; i < nomes.length; i++) {
-            const dataInicio = new Date(hoje);
-
-            if (i === 0) {
-                // One event happening "now"
-                dataInicio.setHours(hoje.getHours() - 1, 0, 0, 0);
-            } else {
-                dataInicio.setDate(hoje.getDate() + i);
-                dataInicio.setHours(9 + (i % 8), 0, 0, 0);
-            }
-
-            const dataFim = new Date(dataInicio);
-            dataFim.setHours(dataInicio.getHours() + 2);
-
-            mockEventos.push({
-                numeroEvento: i + 1,
-                nomeEvento: nomes[i],
-                dataInicioEvento: dataInicio,
-                dataFimEvento: dataFim,
-                codigoTipoEstadoEvento: 1,
-                codigoTipoEvento: (i % 3) + 1,
-                codigoUnidadeOrganizacionalEvento: 100 + i,
-                codigoTipoModalidadeEvento: (i % 2) + 1,
-                quantidadeMaximaParticipantesEvento: 50,
-                criadorId: 'admin'
-            });
+        if (uploadedContent) {
+            console.log('Loading events from uploaded TSV (localStorage)');
+            this.processarTsvContent(uploadedContent);
+        } else {
+            // Load TSV file from assets
+            console.log('Loading events from assets/data/eventos.tsv');
+            this.http.get('assets/data/eventos.tsv', { responseType: 'text' })
+                .subscribe({
+                    next: (tsvContent) => {
+                        this.processarTsvContent(tsvContent);
+                    },
+                    error: (error) => {
+                        console.error('Error loading TSV file:', error);
+                        // Fallback to empty array on error
+                        this.eventosSignal.set([]);
+                    }
+                });
         }
+    }
 
-        this.eventosSignal.set(mockEventos);
+    private processarTsvContent(tsvContent: string): void {
+        const eventos = this.tsvParser.parseTsvToEventos(tsvContent);
+        this.eventosSignal.set(eventos);
+        console.log(`Loaded ${eventos.length} events from TSV file`);
     }
 }
