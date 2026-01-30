@@ -17,16 +17,33 @@
                         <table class="video-wall-table">
                             <thead>
                                 <tr>
-                                    <th class="col-event">Evento</th>
                                     <th class="col-date">Data</th>
                                     <th class="col-time">Horário</th>
-                                    <th class="col-type">Modalidade</th>
-                                    <th class="col-cap">Capacidade</th>
+                                    <th class="col-event">Evento</th>
+                                    <th class="col-cap">
+                                        <div class="header-icon-center">
+                                            <lucide-angular [img]="Users" [size]="24"></lucide-angular>
+                                        </div>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr *ngFor="let event of page" class="event-row animate-row"
                                     [class.is-live]="isLive(event)">
+                                    <td class="col-date">
+                                        <span class="cell-text">{{ formatDate(event.dataInicioEvento) }}</span>
+                                    </td>
+                                    <td class="col-time">
+                                        <span class="cell-text">
+                                            <ng-container *ngIf="!event.isDiaTodoEvento">
+                                                {{ formatTime(event.dataInicioEvento) }} - {{
+                                                formatTime(event.dataFimEvento) }}
+                                            </ng-container>
+                                            <ng-container *ngIf="event.isDiaTodoEvento">
+                                                Dia Todo
+                                            </ng-container>
+                                        </span>
+                                    </td>
                                     <td class="col-event">
                                         <div class="event-name-cell">
                                             <div class="event-title-wrapper">
@@ -35,42 +52,13 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="col-date">
-                                        <div class="icon-cell">
-                                            <lucide-angular [img]="Calendar" [size]="20"></lucide-angular>
-                                            <span class="cell-text">{{ formatDate(event.dataInicioEvento) }}</span>
-                                        </div>
-                                    </td>
-                                    <td class="col-time">
-                                        <div class="icon-cell">
-                                            <lucide-angular [img]="Clock" [size]="20"></lucide-angular>
-                                            <span class="cell-text">
-                                                <ng-container *ngIf="!event.isDiaTodoEvento">
-                                                    {{ formatTime(event.dataInicioEvento) }} - {{
-                                                    formatTime(event.dataFimEvento) }}
-                                                </ng-container>
-                                                <ng-container *ngIf="event.isDiaTodoEvento">
-                                                    Dia Todo
-                                                </ng-container>
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td class="col-type">
-                                        <span class="badge" [class.online]="event.codigoTipoModalidadeEvento === 2">
-                                            {{ event.codigoTipoModalidadeEvento === 1 ? 'Presencial' : 'Online' }}
-                                        </span>
-                                    </td>
                                     <td class="col-cap">
-                                        <div class="icon-cell">
-                                            <lucide-angular [img]="Users" [size]="20"></lucide-angular>
-                                            <span class="cell-text">{{ event.quantidadeMaximaParticipantesEvento
-                                                }}</span>
-                                        </div>
+                                        <span class="cell-text">{{ event.quantidadeMaximaParticipantesEvento }}</span>
                                     </td>
                                 </tr>
                                 <!-- Fill empty rows if less than 5 events to keep layout stable -->
                                 <tr *ngFor="let i of [].constructor(5 - page.length)" class="empty-row">
-                                    <td colspan="5">&nbsp;</td>
+                                    <td colspan="4">&nbsp;</td>
                                 </tr>
                             </tbody>
                         </table>

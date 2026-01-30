@@ -27,7 +27,7 @@ export class ColendarioPageComponent implements OnInit, OnDestroy {
 
     upcomingEvents = this.colendarioService.proximosEventos;
     rotationProgress = signal(0);
-    readonly rotationDuration = 15000; // 15 seconds
+    readonly rotationDuration = 10000; // 10 seconds
 
     // Group events into pages of 5
     eventPages = computed(() => {
@@ -109,10 +109,9 @@ export class ColendarioPageComponent implements OnInit, OnDestroy {
     }
 
     formatDate(date: Date): string {
-        return new Intl.DateTimeFormat('pt-BR', {
-            day: '2-digit',
-            month: 'long'
-        }).format(date);
+        const day = new Intl.DateTimeFormat('pt-BR', { day: '2-digit' }).format(date);
+        const month = new Intl.DateTimeFormat('pt-BR', { month: 'short' }).format(date).replace('.', '');
+        return `${day}/${month}`;
     }
 
     formatTime(date: Date): string {

@@ -161,15 +161,15 @@
 }
 
 .col-event {
-  width: 35%;
+  width: 63%;
 }
 
 .col-date {
-  width: 18%;
+  width: 12%;
 }
 
 .col-time {
-  width: 22%;
+  width: 15%;
 }
 
 .col-type {
@@ -180,6 +180,12 @@
 .col-cap {
   width: 10%;
   text-align: center;
+}
+
+.header-icon-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Cell Content */
