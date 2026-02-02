@@ -67,6 +67,8 @@
 
 .carousel-container {
   width: 100%;
+  height: 600px;
+  /* Fixed height to show exactly one page of events */
   overflow: hidden;
   border-radius: 32px;
   background: rgba(30, 41, 59, 0.4);
@@ -77,12 +79,15 @@
 
 .carousel-track {
   display: flex;
+  flex-direction: column;
   height: 100%;
   transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .carousel-item {
-  min-width: 100%;
+  height: 600px;
+  /* Match container height for proper pagination */
+  flex-shrink: 0;
   box-sizing: border-box;
 }
 
