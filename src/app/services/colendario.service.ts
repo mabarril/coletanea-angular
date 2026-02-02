@@ -17,6 +17,7 @@ export interface Evento {
     quantidadeMaximaParticipantesEvento: number;
     criadorId: string;
     isDiaTodoEvento?: boolean;
+    localEvento?: string;
 }
 
 @Injectable({

@@ -1,7 +1,7 @@
 <div class="colendario-container">
     <div class="header">
         <h1 class="title">co.<span class="title-accent">lendário</span></h1>
-        <p class="subtitle">Próximos eventos agendados • Atualizado em tempo real</p>
+        <p class="subtitle">Próximos eventos agendados</p>
     </div>
 
     <div class="carousel-wrapper">
@@ -48,6 +48,8 @@
                                         <div class="event-name-cell">
                                             <div class="event-title-wrapper">
                                                 <span class="event-name-text">{{ event.nomeEvento }}</span>
+                                                <span *ngIf="event.localEvento" class="event-location">{{
+                                                    event.localEvento }}</span>
                                                 <span *ngIf="isLive(event)" class="badge-live">AO VIVO</span>
                                             </div>
                                         </div>

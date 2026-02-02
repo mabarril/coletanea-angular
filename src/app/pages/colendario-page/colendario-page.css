@@ -3,10 +3,17 @@
   flex-direction: column;
   padding: 40px 60px;
   min-height: 100vh;
-  background: #0f172a;
+  background: transparent;
   /* Custom dark slate for video wall */
   box-sizing: border-box;
   overflow: hidden;
+}
+
+.event-location {
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #94a3b8;
+  margin-left: 12px;
 }
 
 .header {

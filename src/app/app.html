@@ -1,11 +1,11 @@
-<div class="min-h-screen bg-slate-900 text-slate-100 relative">
+<div class="min-h-screen text-slate-100 relative">
+  <app-background-collabs></app-background-collabs>
   <!-- Back Button -->
   <div *ngIf="notLanding" class="fixed top-6 left-6 z-50 animate-in fade-in slide-in-from-left-4 duration-500">
-    <button
-      routerLink="/"
-      class="group flex items-center gap-2 bg-slate-800/80 backdrop-blur border border-slate-700 text-slate-300 hover:text-white hover:border-indigo-500 px-4 py-2 rounded-full shadow-lg transition-all"
-    >
-      <lucide-angular [img]="ArrowLeft" class="group-hover:-translate-x-1 transition-transform w-[18px] h-[18px]"></lucide-angular>
+    <button routerLink="/"
+      class="group flex items-center gap-2 bg-slate-800/80 backdrop-blur border border-slate-700 text-slate-300 hover:text-white hover:border-indigo-500 px-4 py-2 rounded-full shadow-lg transition-all">
+      <lucide-angular [img]="ArrowLeft"
+        class="group-hover:-translate-x-1 transition-transform w-[18px] h-[18px]"></lucide-angular>
       <span class="font-medium text-sm">Voltar</span>
     </button>
   </div>

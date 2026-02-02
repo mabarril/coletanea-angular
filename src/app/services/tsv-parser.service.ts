@@ -114,7 +114,8 @@ export class TsvParserService {
             codigoTipoModalidadeEvento: codigoTipoModalidadeEvento,
             quantidadeMaximaParticipantesEvento: quantidadeParticipantes,
             criadorId: columns[1]?.trim() || 'unknown', // Customer name as creator
-            isDiaTodoEvento: dataInicio.getHours() < 8 || dataInicio.getHours() >= 19
+            isDiaTodoEvento: dataInicio.getHours() < 8 || dataInicio.getHours() >= 19,
+            localEvento: location
         };
     }
 

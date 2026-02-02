@@ -4,11 +4,12 @@ import { LucideAngularModule, ArrowLeft } from 'lucide-angular';
 import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { AnalyticsService } from './services/analytics.service';
+import { BackgroundCollabsComponent } from './components/background-collabs/background-collabs.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, CommonModule, LucideAngularModule],
+  imports: [RouterOutlet, RouterLink, CommonModule, LucideAngularModule, BackgroundCollabsComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

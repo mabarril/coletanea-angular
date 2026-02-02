@@ -1,0 +1,7 @@
+<div class="bg-container">
+    @for (asset of backgroundAssets; track asset.id) {
+    <img [src]="asset.path" class="bg-asset" [style.width.px]="asset.size" [style.top.%]="asset.top"
+        [style.left.%]="asset.left" [style.transform]="'rotate(' + asset.rotation + 'deg)'" loading="lazy"
+        aria-hidden="true">
+    }
+</div>
