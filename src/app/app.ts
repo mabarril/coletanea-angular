@@ -5,11 +5,12 @@ import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { AnalyticsService } from './services/analytics.service';
 import { BackgroundCollabsComponent } from './components/background-collabs/background-collabs.component';
+import { ToastComponent } from './components/toast/toast.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, CommonModule, LucideAngularModule, BackgroundCollabsComponent],
+  imports: [RouterOutlet, RouterLink, CommonModule, LucideAngularModule, BackgroundCollabsComponent, ToastComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

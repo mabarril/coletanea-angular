@@ -1,0 +1,66 @@
+<!-- Toast container positioned at top-right of viewport -->
+<div 
+  class="fixed top-4 right-4 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none"
+  aria-live="polite"
+  aria-atomic="false"
+  role="region"
+  aria-label="Notifications">
+  
+  @for (toast of toasts(); track toast.id) {
+    <div
+      [attr.data-toast-id]="toast.id"
+      [attr.data-toast-type]="toast.type"
+      class="toast-item pointer-events-auto flex items-start gap-3 p-4 rounded-lg shadow-lg backdrop-blur-sm border transition-all duration-300 ease-in-out animate-slide-in"
+      [ngClass]="{
+        'bg-green-50/95 border-green-200 text-green-900': toast.type === 'success',
+        'bg-red-50/95 border-red-200 text-red-900': toast.type === 'error',
+        'bg-yellow-50/95 border-yellow-200 text-yellow-900': toast.type === 'warning',
+        'bg-blue-50/95 border-blue-200 text-blue-900': toast.type === 'info'
+      }"
+      role="alert"
+      [attr.aria-label]="toast.type + ' notification: ' + toast.message">
+      
+      <!-- Icon -->
+      <div class="flex-shrink-0 mt-0.5">
+        <lucide-angular
+          [img]="getIcon(toast.type)"
+          [size]="20"
+          [strokeWidth]="2"
+          [ngClass]="{
+            'text-green-600': toast.type === 'success',
+            'text-red-600': toast.type === 'error',
+            'text-yellow-600': toast.type === 'warning',
+            'text-blue-600': toast.type === 'info'
+          }"
+          [attr.aria-hidden]="true">
+        </lucide-angular>
+      </div>
+      
+      <!-- Message -->
+      <div class="flex-1 text-sm font-medium leading-relaxed">
+        {{ toast.message }}
+      </div>
+      
+      <!-- Close button -->
+      <button
+        type="button"
+        (click)="removeToast(toast.id)"
+        class="flex-shrink-0 rounded-md p-1 hover:bg-black/5 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
+        [ngClass]="{
+          'focus:ring-green-500': toast.type === 'success',
+          'focus:ring-red-500': toast.type === 'error',
+          'focus:ring-yellow-500': toast.type === 'warning',
+          'focus:ring-blue-500': toast.type === 'info'
+        }"
+        [attr.aria-label]="'Close ' + toast.type + ' notification'">
+        <lucide-angular
+          [img]="X"
+          [size]="16"
+          [strokeWidth]="2"
+          class="opacity-60 hover:opacity-100 transition-opacity"
+          [attr.aria-hidden]="true">
+        </lucide-angular>
+      </button>
+    </div>
+  }
+</div>
