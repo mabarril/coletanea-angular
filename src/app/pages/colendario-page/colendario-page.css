@@ -19,10 +19,11 @@
 .header {
   margin-bottom: 40px;
   animation: fadeInDown 0.8s ease-out;
+  text-align: center;
 }
 
 .title {
-  font-size: 4rem;
+  font-size: 2.5rem;
   font-weight: 900;
   letter-spacing: -0.05em;
   color: white;
@@ -35,7 +36,7 @@
 
 .subtitle {
   color: #64748b;
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: 400;
   margin-top: 8px;
 }
@@ -173,7 +174,7 @@
 }
 
 .col-event {
-  width: 63%;
+  width: 55%;
 }
 
 .col-date {
@@ -182,6 +183,11 @@
 
 .col-time {
   width: 15%;
+}
+
+.col-space {
+  width: 8%;
+  text-align: center;
 }
 
 .col-type {
@@ -279,6 +285,30 @@
   background: rgba(59, 130, 246, 0.15);
   color: #60a5fa;
   border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+/* Legend Styles */
+.legend-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+  margin-top: 32px;
+  padding: 20px;
+  background: rgba(30, 41, 59, 0.4);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  border: 1px solid rgba(71, 85, 105, 0.3);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #cbd5e1;
 }
 
 /* Footer / Navigation */

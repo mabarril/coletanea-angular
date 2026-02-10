@@ -1,7 +1,7 @@
 import { Component, inject, signal, computed, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { LucideAngularModule, Calendar, ChevronLeft, ChevronRight, MapPin, Clock, Users } from 'lucide-angular';
+import { LucideAngularModule, Calendar, ChevronLeft, ChevronRight, MapPin, Clock, Users, Theater, GraduationCap, BrainCircuit, Target, Earth, Drama, BookA } from 'lucide-angular';
 import { ColendarioService, Evento } from '../../services/colendario.service';
 
 @Component({
@@ -20,6 +20,13 @@ export class ColendarioPageComponent implements OnInit, OnDestroy {
     readonly MapPin = MapPin;
     readonly Clock = Clock;
     readonly Users = Users;
+    readonly Theater = Theater;
+    readonly GraduationCap = GraduationCap;
+    readonly BrainCircuit = BrainCircuit;
+    readonly Target = Target;
+    readonly Earth = Earth;
+    readonly Drama = Drama;
+    readonly BookA = BookA;
 
     private rotationInterval: any;
     private progressInterval: any;
@@ -142,5 +149,20 @@ export class ColendarioPageComponent implements OnInit, OnDestroy {
             month: '2-digit',
             year: 'numeric'
         }).format(date);
+    }
+
+    getSpaceIcon(espaco: string | undefined): { icon: any, color: string } | null {
+        if (!espaco) return null;
+
+        const spaceMap: { [key: string]: { icon: any, color: string } } = {
+            'Palco Principal': { icon: this.Theater, color: '#f59e0b' },      // Amber/Gold
+            'Sala 1': { icon: this.Target, color: '#dc2626' },                // Red
+            'Sala 2': { icon: this.Earth, color: '#16a34a' },                 // Green
+            'Sala 4': { icon: this.GraduationCap, color: '#2563eb' },         // Blue
+            'co.media': { icon: this.Drama, color: '#ea580c' },               // Orange
+            'Sala 5': { icon: this.BookA, color: '#ec4899' }                  // Pink
+        };
+
+        return spaceMap[espaco] || null;
     }
 }

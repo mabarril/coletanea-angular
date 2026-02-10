@@ -20,7 +20,10 @@ export class TsvParserService {
      * Parse TSV content from Microsoft Bookings export
      * @param tsvContent The raw TSV file content as string
      * @returns Array of Evento objects
+     * 
+     * 
      */
+
     parseTsvToEventos(tsvContent: string): Evento[] {
         const lines = tsvContent.split('\n').filter(line => line.trim());
 
@@ -45,7 +48,7 @@ export class TsvParserService {
                 console.error('Error parsing TSV row:', error, line);
             }
         }
-
+        console.log(eventos);
         return eventos;
     }
 
@@ -96,7 +99,18 @@ export class TsvParserService {
         }
 
         // Extract location (column 9)
-        const location = columns[9]?.trim() || '';
+        const location = columns[8]?.trim() || '';
+
+        // Extract space/venue from location (text before '-')
+        let espaco = '';
+        if (location) {
+            const dashIndex = location.indexOf('-');
+            if (dashIndex !== -1) {
+                espaco = location.substring(0, dashIndex).trim();
+            } else {
+                espaco = location;
+            }
+        }
 
         // Determine modalidade based on location or service name
         // If location is empty or contains "online", it's online (2), otherwise presencial (1)
@@ -115,7 +129,8 @@ export class TsvParserService {
             quantidadeMaximaParticipantesEvento: quantidadeParticipantes,
             criadorId: columns[1]?.trim() || 'unknown', // Customer name as creator
             isDiaTodoEvento: dataInicio.getHours() < 8 || dataInicio.getHours() >= 19,
-            localEvento: location
+            localEvento: location,
+            espaco: espaco
         };
     }
 

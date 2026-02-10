@@ -18,6 +18,7 @@ export interface Evento {
     criadorId: string;
     isDiaTodoEvento?: boolean;
     localEvento?: string;
+    espaco?: string;
 }
 
 @Injectable({
