@@ -17,7 +17,7 @@ interface BackgroundAsset {
  * Configuration constants for background generation
  */
 const BACKGROUND_CONFIG = {
-    REGENERATE_INTERVAL_MS: 600000, // 10 minutes
+    REGENERATE_INTERVAL_MS: 86400000, // 10 minutes
     ASSETS_COUNT: 5,
     MIN_SIZE: 90,
     MAX_SIZE: 140,
