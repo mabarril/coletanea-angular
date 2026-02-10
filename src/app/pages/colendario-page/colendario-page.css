@@ -19,11 +19,10 @@
 .header {
   margin-bottom: 40px;
   animation: fadeInDown 0.8s ease-out;
-  text-align: center;
 }
 
 .title {
-  font-size: 2.5rem;
+  font-size: 4rem;
   font-weight: 900;
   letter-spacing: -0.05em;
   color: white;
@@ -36,7 +35,7 @@
 
 .subtitle {
   color: #64748b;
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: 400;
   margin-top: 8px;
 }
@@ -417,4 +416,5 @@
 
 .empty-row td {
   border-bottom: none;
+
 }
