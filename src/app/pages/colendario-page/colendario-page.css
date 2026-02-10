@@ -17,7 +17,7 @@
 }
 
 .header {
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   animation: fadeInDown 0.8s ease-out;
 }
 
@@ -418,3 +418,4 @@
   border-bottom: none;
 
 }
+
