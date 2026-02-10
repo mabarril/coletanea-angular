@@ -39,6 +39,21 @@ export class ColendarioPageComponent implements OnInit, OnDestroy {
         return pages;
     });
 
+    // Check if there are multiple pages to show progress bar
+    hasMultiplePages = computed(() => this.eventPages().length > 1);
+
+    // Dynamic subtitle based on events
+    subtitleText = computed(() => {
+        const events = this.upcomingEvents();
+        if (events.length === 0) {
+            return 'Nenhum evento agendado';
+        }
+
+        const lastEvent = events[events.length - 1];
+        const formattedDate = this.formatFullDate(lastEvent.dataFimEvento);
+        return `Eventos agendados até ${formattedDate}`;
+    });
+
     currentIndex = signal(0);
 
     ngOnInit() {
@@ -118,6 +133,14 @@ export class ColendarioPageComponent implements OnInit, OnDestroy {
         return new Intl.DateTimeFormat('pt-BR', {
             hour: '2-digit',
             minute: '2-digit'
+        }).format(date);
+    }
+
+    formatFullDate(date: Date): string {
+        return new Intl.DateTimeFormat('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
         }).format(date);
     }
 }

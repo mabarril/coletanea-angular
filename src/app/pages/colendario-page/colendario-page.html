@@ -1,11 +1,11 @@
 <div class="colendario-container">
     <div class="header">
         <h1 class="title">co.<span class="title-accent">lendário</span></h1>
-        <p class="subtitle">Próximos eventos agendados</p>
+        <p class="subtitle">{{ subtitleText() }}</p>
     </div>
 
     <div class="carousel-wrapper">
-        <div class="rotation-progress-container">
+        <div class="rotation-progress-container" *ngIf="hasMultiplePages()">
             <div class="rotation-progress-bar" [style.width.%]="rotationProgress()"></div>
         </div>
 
