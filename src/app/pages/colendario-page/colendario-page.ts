@@ -46,7 +46,7 @@ export class ColendarioPageComponent implements OnInit, OnDestroy {
     subtitleText = computed(() => {
         const events = this.upcomingEvents();
         if (events.length === 0) {
-            return 'Nenhum evento agendado';
+            return 'Nenhum evento agendado!';
         }
 
         const lastEvent = events[events.length - 1];
